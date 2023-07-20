@@ -1,17 +1,9 @@
 import React from 'react'
-import Sidebar from '../components/sidebar'
-import Navbar from '../components/Navbar'
 
-const Layout = (props) => {
+const layout = () => {
   return (
-    <>
-      <Sidebar/>
-      <Navbar/>
-      <section className="section main-section" style={{ height: '90vh' }}>
-        {props.children}
-      </section>
-    </>
+    <div>layout</div>
   )
 }
 
-export default Layout
+export default layout
