@@ -4,11 +4,13 @@ import Navbar from '../components/Navbar'
 
 const Layout = (props) => {
   return (
-    <section className="section main-section">
+    <>
       <Sidebar/>
       <Navbar/>
-      {props.children}
-    </section>
+      <section className="section main-section" style={{ height: '90vh' }}>
+        {props.children}
+      </section>
+    </>
   )
 }
 

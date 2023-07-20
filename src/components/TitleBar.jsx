@@ -8,10 +8,13 @@ const TitleBar = (props) => {
           <li className='capitalize'>{props.title}</li>
         </ul>
 
-        <button className={`button blue --jb-modal ${props.btnStyle}`} data-target="create-modal" type="button">
+        {/* <button className={`button blue --jb-modal ${props.btnStyle}`} data-target="create-modal" type="button">
           <span className="icon"><i className="mdi mdi-plus"></i></span>
           <span>{props.btnText || 'Create New'}</span>
-        </button>
+        </button> */}
+
+        {props.button}
+        
       </div>
     </section>
   )
