@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import paluLogo from '../assets/images/lambang_kota_palu.png'
+import Layout from '../layouts/layout'
+import TitleBar from '../components/TitleBar'
 
 const Dashboard = () => {
 
@@ -16,22 +18,10 @@ const Dashboard = () => {
 
   return (
     <>
-      <button onClick={() => printArea('area')}>print 1</button>
-
-      <div id='area' style={{ width: '595px', height: '842px', border: '1px solid black' }}>
-        <div className='w-full h-full text-tnr text-2xl font-black flex justify-center'>
-          <div className='flex flex-row'>
-            <div className='mr-4'>
-              <img src={paluLogo} alt="" className='w-16' />
-            </div>
-            <div className='text-center'>
-              <h3>KECAMATAN PALU BARAT</h3>
-              <h3>KELURAHAN BALAROA</h3>
-              <h5 className='text-lg'>Jalan Yambaere No.5</h5>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Layout>
+        <TitleBar title='dashboard' />
+        <h1>ini bagian isi</h1>
+      </Layout>
 
     </>
   )
