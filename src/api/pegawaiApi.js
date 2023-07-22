@@ -1,6 +1,5 @@
 import axios from "axios";
-
-const apiUrl = 'http://localhost:8000/api/v1'
+const apiUrl = import.meta.env.VITE_APP_API 
 
 export const GetPegawai = () => {
     return axios.get(`${apiUrl}/pegawai`,)

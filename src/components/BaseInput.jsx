@@ -16,10 +16,24 @@ export const SearchInput = () => {
     )
 }
 
+export const SelectInput = (props) => {
+    return (
+        <label className={`block text-sm ${props.className}`} id={props.id}>
+            <span className={`text-gray-700 capitalize ${props.classLabel}`}>{props.label || props.name}</span>
+            <select value={props.value} name={props.name} onChange={props.onChange}
+                className='block w-full mt-1 text-sm bg-transparent p-2 border border-gray-600 rounded-md form-input'
+            >
+                <option disabled value=""></option>
+                {props.children}
+            </select>
+        </label>
+    )
+}
+
 export const BaseInput = (props) => {
     return (
         <label className={`block text-sm ${props.className}`} id={props.id}>
-            <span className={`text-gray-700 capitalize ${props.classLabel}`}>{props.name}</span>
+            <span className={`text-gray-700 capitalize ${props.classLabel}`}>{props.label || props.name}</span>
             <input type={props.type || 'text'} value={props.value} onChange={props.onChange} name={props.name} placeholder={props.placeholder || 'Type here'}
                 className="block w-full mt-1 text-sm bg-transparent p-2 border border-gray-600 rounded-md form-input" 
             />
