@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from "react-router-dom";
-import { GetUser } from '../api/userApi'
+// import { GetUser } from '../api/userApi'
 import { AlertConfirm } from './SweetAlert'
 
 const Sidebar = () => {
@@ -12,16 +12,16 @@ const Sidebar = () => {
         document.getElementById(id).classList.add('active')
     }
 
-    const checkToken = async () => {
-        try {
-            const response = await GetUser()
-            if (response.status == 403) {
-                localStorage.removeItem("user");
-                navigate('/login')
-            }
-        } catch (error) {
-        }
-    }
+    // const checkToken = async () => {
+    //     try {
+    //         const response = await GetUser()
+    //         if (response.status == 403) {
+    //             localStorage.removeItem("user");
+    //             navigate('/login')
+    //         }
+    //     } catch (error) {
+    //     }
+    // }
 
     const logoutUser = () => {
         AlertConfirm({
@@ -33,6 +33,12 @@ const Sidebar = () => {
         })
     }
 
+    const dropdownMenu = () => {
+        document.getElementById('dropdownMenu').classList.toggle('active')
+        document.getElementById('iconDropdown').classList.toggle('mdi-plus')
+        document.getElementById('iconDropdown').classList.toggle('mdi-minus')
+    }
+
     useEffect(() => {
         // checkToken()
     }, [])
@@ -40,15 +46,15 @@ const Sidebar = () => {
     useEffect(() => {
         if (location.pathname === '/') {
             setActivePage('dashboard')
-        } else if (location.pathname === '/service') {
-            setActivePage('service')
+        } else if (location.pathname === '/pegawai') {
+            setActivePage('pegawai')
         } else if (location.pathname === '/setup') {
             setActivePage('setup')
         }
     }, [location]);
 
     return (
-        <aside className="aside is-placed-left is-expanded">
+        <aside className="aside is-placed-left is-expanded" style={{ minHeight: '100vh', maxHeight: 'fit-content', overflowY: 'auto' }}>
             <div className='h-5/6'>
                 <div className="aside-tools">
                     <div>
@@ -64,29 +70,45 @@ const Sidebar = () => {
                                 <span className="menu-item-label">Dashboard</span>
                             </a>
                         </li>
-                        <li id='service'>
+                        <li id='pegawai'>
                             <a onClick={() => navigate('/pegawai')}>
                                 <span className="icon"><i className="mdi mdi-table"></i></span>
                                 <span className="menu-item-label">Pegawai</span>
                             </a>
                         </li>
-                        <li id='service'>
-                            <a onClick={() => navigate('/service')}>
-                                <span className="icon"><i className="mdi mdi-table"></i></span>
-                                <span className="menu-item-label">Service</span>
+                        <li className="" id="dropdownMenu" onClick={dropdownMenu}>
+                            <a className="dropdown">
+                                <span className="icon"><i className="mdi mdi-view-list"></i></span>
+                                <span className="menu-item-label">Surat</span>
+                                <span className="icon"><i className="mdi mdi-plus" id="iconDropdown"></i></span>
                             </a>
-                        </li>
-                        <li id='setup'>
-                            <a onClick={() => navigate('/setup')}>
-                                <span className="icon"><i className="mdi mdi-tools"></i></span>
-                                <span className="menu-item-label">Setup</span>
-                            </a>
-                        </li>
-                        <li id='profile'>
-                            <a>
-                                <span className="icon"><i className="mdi mdi-account-circle"></i></span>
-                                <span className="menu-item-label">Profile</span>
-                            </a>
+                            <ul>
+                                <li className="bg-gray-800" id="berkelakuan-baik">
+                                    <a onClick={() => navigate('/surat/berkelakuan-baik')}>
+                                        <span>S. K. Berkelakuan Baik</span>
+                                    </a>
+                                </li>
+                                <li className="bg-gray-800" id="usaha">
+                                    <a onClick={() => navigate('/surat/usaha')}>
+                                        <span>S. K. Usaha</span>
+                                    </a>
+                                </li>
+                                <li className="bg-gray-800">
+                                    <a href="/surat/domisili-usaha">
+                                        <span>S. K. Domisili Usaha</span>
+                                    </a>
+                                </li>
+                                <li className="bg-gray-800">
+                                    <a href="/surat/rumah">
+                                        <span>S. K. Belum Memiliki Rumah</span>
+                                    </a>
+                                </li>
+                                <li className="bg-gray-800">
+                                    <a href="/surat/sktm">
+                                        <span>S. K. Tidak Mampu (SKTM)</span>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </div>

@@ -3,13 +3,11 @@ import { createGlobalState } from 'react-hooks-global-state';
 import { useGlobalState } from '../state/state';
 
 // component
-import Sidebar from '../components/Sidebar';
-import TitleBar from '../components/TitleBar';
-import Card from '../components/Card';
 import { ModalLoading, openModal, closeModal, BaseModal } from '../components/BaseModal'
 import { AlertConfirm, AlertError, AlertSuccess } from '../components/SweetAlert'
 import { BasicButton } from '../components/BaseButton'
 import { BaseInput } from '../components/BaseInput';
+import Layout from '../layouts/Layout';
 
 // api
 import { GetUser, DeleteUser, CreateUser, UpdateUser } from '../api/userApi';
@@ -173,25 +171,18 @@ const Dashboard = () => {
     }
   }
 
-  useEffect(() => {
-    getAllUser()
-  }, [])
+  // useEffect(() => {
+  //   getAllUser()
+  // }, [])
 
-  useEffect(() => {
-    getAllUser()
-  }, [nul]);
+  // useEffect(() => {
+  //   getAllUser()
+  // }, [nul]);
 
  
   return (
     <>
-      <Sidebar />
-      <TitleBar
-        title='Dashboard'
-        button={<BasicButton onClick={createNew} iconShow='block' icon='mdi-plus-thick' title='Create New User'/>}
-      />
-
-      <section className="section main-section" style={{ height: '75vh' }}>
-       
+      <Layout title='Dashboard' >
 
         <div className="card has-table">
           <div className="card-content">
@@ -230,21 +221,10 @@ const Dashboard = () => {
                 ))} */}
               </tbody>
             </table>
-            
-            <div className="table-pagination">
-              <div className="flex items-center justify-between">
-                <div className="buttons">
-                  <button type="button" className="button active">1</button>
-                  <button type="button" className="button">2</button>
-                  <button type="button" className="button">3</button>
-                </div>
-                <small>Page 1 of 3</small>
-              </div>
-            </div>
           </div>
         </div>
 
-      </section>
+      </Layout>
 
       {/* ===== upsert modal ===== */}
       <BaseModal id='upsert' title={`${optText} user`}>
