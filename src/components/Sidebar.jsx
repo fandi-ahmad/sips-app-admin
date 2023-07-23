@@ -39,8 +39,24 @@ const Sidebar = () => {
         document.getElementById('iconDropdown').classList.toggle('mdi-minus')
     }
 
+
+    const checkActiveMenu = () => {
+        const activeMenu = () => {
+            document.getElementById('iconDropdown').classList.remove('mdi-plus')
+            document.getElementById('dropdownMenu').classList.add('active')
+            document.getElementById('iconDropdown').classList.add('mdi-minus')
+        }
+
+        if (location.pathname === '/surat/berkelakuan-baik') {
+            activeMenu()
+        } else {
+            
+        }
+    }
+
     useEffect(() => {
         // checkToken()
+        checkActiveMenu()
     }, [])
 
     useEffect(() => {
@@ -48,8 +64,8 @@ const Sidebar = () => {
             setActivePage('dashboard')
         } else if (location.pathname === '/pegawai') {
             setActivePage('pegawai')
-        } else if (location.pathname === '/setup') {
-            setActivePage('setup')
+        } else if (location.pathname === '/surat/berkelakuan-baik') {
+            setActivePage('berkelakuan-baik')
         }
     }, [location]);
 
@@ -76,13 +92,13 @@ const Sidebar = () => {
                                 <span className="menu-item-label">Pegawai</span>
                             </a>
                         </li>
-                        <li className="" id="dropdownMenu" onClick={dropdownMenu}>
+                        <li className="" id="dropdownMenu" onClick={dropdownMenu} >
                             <a className="dropdown">
                                 <span className="icon"><i className="mdi mdi-view-list"></i></span>
                                 <span className="menu-item-label">Surat</span>
                                 <span className="icon"><i className="mdi mdi-plus" id="iconDropdown"></i></span>
                             </a>
-                            <ul>
+                            <ul className='p-0'>
                                 <li className="bg-gray-800" id="berkelakuan-baik">
                                     <a onClick={() => navigate('/surat/berkelakuan-baik')}>
                                         <span>S. K. Berkelakuan Baik</span>
@@ -123,6 +139,7 @@ const Sidebar = () => {
                     </li>
                 </ul>
             </div>
+          
         </aside>
     )
 }

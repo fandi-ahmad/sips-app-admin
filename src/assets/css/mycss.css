@@ -84,3 +84,7 @@
 input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(1) hue-rotate(180deg);
 }
+
+a {
+    border-radius: 4px !important;
+}
