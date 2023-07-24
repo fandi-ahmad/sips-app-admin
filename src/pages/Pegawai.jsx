@@ -1,39 +1,125 @@
-import React, { useState, useEffect } from 'react'
-import Layout from '../layouts/layout'
-import TitleBar from '../components/TitleBar'
-
-import { GetPegawai } from '../api/pegawaiApi'
-import TableHead from '../components/TableHead'
-// import { BaseModal, ModalLoading, openModal, closeModal } from '../components/BaseModal'
-import { BaseModal, openModal, closeModal } from '../components/BaseModal'
+import React, {useState, useEffect} from 'react'
 import { BasicButton } from '../components/BaseButton'
-import Navbar from '../components/Navbar'
-import Sidebar from '../components/sidebar'
+import { GetPegawai, CreatePegawai, DeletePegawai, UpdatePegawai } from '../api/pegawaiApi'   // api
+import { BaseModal, ModalLoading, openModal, closeModal } from '../components/BaseModal'
+import Layout from '../layouts/Layout'
+import { BaseInput } from '../components/BaseInput'
+import { AlertError, AlertSuccess, AlertConfirm } from '../components/SweetAlert'
+import { getId } from '../function/baseFunction'
 
-const Pegawai = () => {
+export const Pegawai = () => {
 
   const [pegawaiList, setPegawaiList] = useState([])
+  const [nama, setNama] = useState('')
+  const [jabatan, setJabatan] = useState('')
+  const [nip, setNip] = useState('')
+  const [idPegawai, setIdPegawai] = useState('')
+
+  const createNew = () => {
+    openModal('upsert')
+    getId('btnCreate').classList.remove('hidden')
+    getId('btnUpdate').classList.add('hidden')
+  }
 
   const getAllData = async () => {
     try {
       const response = await GetPegawai()
-
       setPegawaiList(response.data)
-
     } catch (error) {
-      console.log(error, '<-- error get pegawai')
+      console.log(error);      
     }
   }
 
-  const createNew = () => {
-    // openModal('upsert')
-    console.log('test');
+  const handleInput = (e) => {
+    const { name, value } = e.target;
+    switch (name) {
+      case 'nama': setNama(value); break;
+      case 'jabatan': setJabatan(value); break;
+      case 'nip': setNip(value); break;
+      default: break;
+    }
+  };
 
-    const modalToggle = document.getElementById('upsert')
-    modalToggle.checked = true
-
-    console.log(modalToggle)
+  const resetData = () => {
+    setNama(''); setJabatan(''); setNip('')
   }
+
+  const createPegawai = async () => {
+    try {
+      if (nama === '' || jabatan === '' || nip === '') {
+        AlertError('input tidak boleh kosong')
+      } else {
+        closeModal('upsert')
+        openModal('modal-loading')
+        const response = await CreatePegawai({
+          nama: nama,
+          jabatan: jabatan,
+          nip: nip
+        })
+  
+        closeModal('modal-loading')
+        getAllData()
+        AlertSuccess('Pegawai berhasil dibuat')
+        resetData()
+      }
+    } catch (error) {
+      AlertError()
+    }
+  }
+
+  const deletePegawai = (id) => {
+    AlertConfirm({
+      title: 'delete?',
+      preConfirm: () => confirmDeletePegawai(id)
+    })
+  }
+
+  const confirmDeletePegawai = async (id) => {
+    openModal('modal-loading')
+    try {
+      const res = await DeletePegawai(id)
+      AlertSuccess('Delete Successfully')
+      getAllData()
+    } catch (error) {
+      AlertError()
+    }
+    closeModal('modal-loading')
+  }
+
+  const editPegawai = (pegawai) => {
+    getId('btnCreate').classList.add('hidden')
+    getId('btnUpdate').classList.remove('hidden')
+    openModal('upsert')
+    setNama(pegawai.nama)
+    setJabatan(pegawai.jabatan)
+    setNip(pegawai.nip)
+    setIdPegawai(pegawai.id)
+  }
+
+  const updatePegawai = async () => {
+    try {
+      if (nama === '' || jabatan === '' || nip === '') {
+        AlertError('input tidak boleh kosong')
+      } else {
+        closeModal('upsert')
+        openModal('modal-loading')
+
+        const res = await UpdatePegawai({
+          id: idPegawai,
+          nama: nama,
+          jabatan: jabatan,
+          nip: nip
+        })
+        
+        closeModal('modal-loading')
+        AlertSuccess()
+        getAllData()
+      }
+    } catch (error) {
+      AlertError()
+    }
+  }
+
 
   useEffect(() => {
     getAllData()
@@ -41,109 +127,64 @@ const Pegawai = () => {
 
   return (
     <>
-      <Sidebar />
-      <Navbar/>
-      <TitleBar title='Pegawai' 
-        button={<BasicButton onClick={createNew} iconShow='block' icon='mdi-plus-thick' title='Create New Service'/>} 
-      />
-      
-    
-      <div className="card has-table text-gray-800">
-        <TableHead title='daftar pegawai' />
-        <div className="card-content">
-          <table>
-            <thead>
-              <tr>
-                <th></th>
-                <th>Nama</th>
-                <th>Jabatan</th>
-                <th>NIP</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {pegawaiList.map((pegawai, index) => (
-                <tr key={pegawai.id}>
-                  <td className="image-cell">{index + 1}</td>
-                  <td data-label="Nama">{pegawai.nama}</td>
-                  <td data-label="Jabatan">{pegawai.jabatan}</td>
-                  <td data-label="NIP">{pegawai.nip}</td>
-                  <td className="actions-cell">
-                    <div className="buttons right nowrap">
-                      {/* <button id="editButton" className="button small green --jb-modal"  data-target="edit" type="button"
-                        data-id="<%= pegawai.id %>"
-                        data-nama="<%= pegawai.nama %>"
-                        data-jabatan="<%= pegawai.jabatan %>"
-                        data-nip="<%= pegawai.nip %>"
-                      >
-                        <span className="icon"><i className="mdi mdi-pen"></i></span>
-                      </button>
-                      <button className="button small red --jb-modal" data-target="delete" type="button" data-id="<%= pegawai.id %>">
-                        <span className="icon"><i className="mdi mdi-trash-can"></i></span>
-                      </button> */}
-                    </div>
-                  </td>
+      <Layout
+        title='Pegawai'
+        button={<BasicButton onClick={createNew} iconShow='block' icon='mdi-plus-thick' title='Create Pegawai'/>}
+      >
+        <div className="card has-table">
+          <div className="card-content">
+            <table className='text-slate-800'>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Nama</th>
+                  <th>Jabatan</th>
+                  <th>NIP</th>
+                  <th>Created</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="table-pagination">
-            <div className="flex items-center justify-between">
-              <div className="buttons">
-                <button type="button" className="button active">1</button>
-                <button type="button" className="button">2</button>
-                <button type="button" className="button">3</button>
-              </div>
-              <small>Page 1 of 3</small>
-            </div>
+              </thead>
+              <tbody>
+                {pegawaiList.map((pegawai, index) => (
+                  <tr key={pegawai.id}>
+                   <td className="image-cell">{index+1}</td>
+                    <td data-label="Nama">{pegawai.nama}</td>
+                    <td data-label="Jabatan">{pegawai.jabatan}</td>
+                    <td data-label="NIP">{pegawai.nip}</td>
+                    <td data-label="Created"><small>{pegawai.createdAt}</small></td>
+                    <td className="actions-cell">
+                      <div className="buttons right nowrap">
+                        <button onClick={() => editPegawai(pegawai)} id="editButton" className="button small green">
+                          <span className="icon"><i className="mdi mdi-pen"></i></span>
+                        </button>
+                        <button onClick={() => deletePegawai(pegawai.id)} className="button small red">
+                          <span className="icon"><i className="mdi mdi-trash-can"></i></span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
-        <input type="checkbox" />
-      </div>
-
-      <input type="checkbox" id='upsert' className="modal-toggle" />
-      <div className="modal">
-          <div className={`w-96 modal-box max-w-5xl bg-white text-gray-700`} >
-              <h3 className="font-bold text-2xl capitalize mb-4">title</h3>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Est, quisquam?</p>
-          </div>
-      </div>
+      </Layout>
 
 
-      {/* <BaseModal id='upsert' title='create form' classSize='w-screen'>
-        <div className='grid gap-4 md:grid-cols-2'>
-          <p>input form</p>
-        </div>
+      {/* ===== upsert modal ===== */}
+      <BaseModal id='upsert' title={`create pegawai`}>
+        <BaseInput value={nama} onChange={handleInput} name='nama' className='mb-5' />
+        <BaseInput value={jabatan} onChange={handleInput} name='jabatan' className='mb-5' />
+        <BaseInput value={nip} onChange={handleInput} name='nip' className='mb-5' />
         <div className="modal-action pt-4">
-          <button>click</button>
+          <BasicButton onClick={() => closeModal('upsert')} title='Close' className='bg-gray-500 text-white' />
+          <BasicButton onClick={createPegawai} id='btnCreate' title='Create'/>
+          <BasicButton onClick={updatePegawai} id='btnUpdate' title='Update'/>
         </div>
-      </BaseModal> */}
+      </BaseModal>
 
+      {/* ===== loading ===== */}
+      <ModalLoading id='modal-loading' />
 
-      {/* <div id="create-modal" className="modal">
-        <div className="modal-background --jb-modal-close"></div>
-        <div className="modal-card">
-          <header className="modal-card-head">
-            <p className="modal-card-title">create form</p>
-          </header>
-          <section className="modal-card-body">
-            <div className="field-body">
-              
-            </div>
-            <div className="field grouped mt-2">
-              <div className="control">
-                <div className="button --jb-modal-close" id="btnCancel">Cancel</div>
-              </div>
-              <div className="control">
-                <button type="submit" className="button red">Create</button>
-              </div>
-            </div>
-          
-          </section>
-        </div>
-      </div> */}
     </>
   )
 }
-
-export default Pegawai

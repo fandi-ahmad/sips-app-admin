@@ -1,13 +1,13 @@
 import React from 'react'
-import Sidebar from '../components/sidebar'
-import Navbar from '../components/Navbar'
+import Sidebar from '../components/Sidebar'
+import TitleBar from '../components/TitleBar'
 
 const Layout = (props) => {
   return (
     <>
       <Sidebar/>
-      <Navbar/>
-      <section className="section main-section" style={{ height: '90vh' }}>
+      <TitleBar title={props.title} button={props.button} />
+      <section className="section main-section"  style={{ minHeight: '75vh' }}>
         {props.children}
       </section>
     </>
