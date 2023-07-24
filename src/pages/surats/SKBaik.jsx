@@ -6,8 +6,8 @@ import { GetPegawai } from '../../api/pegawaiApi'     // api
 import { BaseModal, openModal, closeModal, ModalLoading } from '../../components/BaseModal'
 import { BaseInput, SelectInput } from '../../components/BaseInput'
 import { AlertError, AlertSuccess } from '../../components/SweetAlert'
-import { getId } from '../../function/baseFunction'
-import logoImage from '../../assets/images/lambang_kota_palu.png'
+import { getId, formatDateMounth, formatedNoSurat, printSurat } from '../../function/baseFunction'
+import { FooterTtd, BiodataWarga, HeadPegawai, KopSurat, BaseSurat, Paragraf } from '../../components/SuratComponents'
 
 
 const SKBaik = () => {
@@ -69,6 +69,7 @@ const SKBaik = () => {
   }
 
   const createNew = () => {
+    resetData()
     openModal('upsert')
     getId('btnCreate').classList.remove('hidden')
     getId('btnUpdate').classList.add('hidden')
@@ -124,7 +125,6 @@ const SKBaik = () => {
       getAllData()
     } catch (error) {
       AlertError()
-      console.log(error, '<-- error create surat');
     }
   }
 
@@ -149,6 +149,12 @@ const SKBaik = () => {
     setNoSurat(surat.no_surat)
     setMaksud(surat.maksud)
     setIdPegawai(surat.pegawai.id_pegawai)
+  }
+
+  const resetData = () => {
+    setNama(''); setTempatLahir(''); setTglLahir(''); setJk(''); setPekerjaan('')
+    setNegara('indonesia'); setStatus(''); setAgama(''); setAlamat(''); setRtrw('')
+    setNoSurat(''); setNoSuratNumber(''); setMaksud(''); setIdPegawai('')
   }
 
   const editSurat = (surat) => {
@@ -188,7 +194,6 @@ const SKBaik = () => {
       getAllData()
     } catch (error) {
       AlertError()
-      console.log(error, '<-- error update');
     }
   }
 
@@ -205,35 +210,6 @@ const SKBaik = () => {
     openModal('suratPreview')
     setDataSurat(surat)
   }
-
-
-  const printSurat = () => {
-    const printPage = getId('printArea').innerHTML;
-    const printContent = document.createElement('div');
-    printContent.innerHTML = printPage;
-  
-    // Sembunyikan elemen-elemen yang tidak perlu dicetak
-    // Anda bisa menyesuaikan elemen-elemen ini sesuai dengan halaman Anda
-    const elementsToHide = document.querySelectorAll('.header, .sidebar');
-    elementsToHide.forEach(element => {
-      element.style.display = 'none';
-    });
-  
-    // Tampilkan elemen-elemen yang ingin dicetak
-    document.body.appendChild(printContent);
-  
-    // Cetak halaman
-    window.print();
-  
-    // Hapus elemen printContent setelah mencetak selesai
-    document.body.removeChild(printContent);
-  
-    // Kembalikan tampilan elemen yang disembunyikan
-    elementsToHide.forEach(element => {
-      element.style.display = '';
-    });
-  };
-  
 
 
   useEffect(() => {
@@ -265,7 +241,7 @@ const SKBaik = () => {
                    <td className="image-cell">{index+1}</td>
                     <td data-label="No Surat"><small>{surat.no_surat}</small></td>
                     <td data-label="Nama Warga">{surat.warga.nama}</td>
-                    <td data-label="TTL">{surat.warga.tempat_lahir}, {surat.warga.tanggal_lahir}</td>
+                    <td data-label="TTL">{surat.warga.tempat_lahir}, {formatDateMounth(surat.warga.tanggal_lahir)}</td>
                     <td data-label="Created"><small>{surat.createdAt}</small></td>
                     <td className="actions-cell">
                       <div className="buttons right nowrap">
@@ -322,110 +298,32 @@ const SKBaik = () => {
       </BaseModal>
 
       <BaseModal id='suratPreview' classSize='w-screen min-h-screen'>
-        <div id="printArea">
-          <div id="letterPreview" className="preview-print">
-            <div className="print-preview text-center text-tnr" style={{ width: '100%', height: 'fit-content',}}>
-              <div className="flex flex-row gap-4 justify-center items-center">
-                <div style={{ width: '80px' }}>
-                  <img src={logoImage} alt="" style={{ width: '100%' }} />
-                </div>
-                <div>
-                  <h1 className="text-xl leading-none font-medium">PEMERINTAH KOTA PALU</h1>
-                  <p className="text-2xl leading-none" style={{ fontWeight: '900' }}>KECAMATAN PALU BARAT</p>
-                  <p className="text-2xl leading-none" style={{ fontWeight: '900' }}>KELURAHAN BALAROA</p>
-                  <p className="font-bold leading-none">JL. Yambaere No. 05</p>
-                </div>
-              </div>
+        <BaseSurat>
+          <KopSurat surat='surat keterangan berkelakuan baik' no={noSurat} />
 
-              <hr className="my-2" style={{ border: '1px solid black' }} />
+          <HeadPegawai nama={namaPegawai} jabatan={jabatanPegawai} />
 
-              <div className="mb-2">
-                <u><b>SURAT KETERANGAN BERKELAKUAN BAIK</b></u>
-                <p className="leading-none">NOMOR: {noSurat}</p>
-              </div>
+          <BiodataWarga
+            nama={nama} nik={nik} jk={jk} ttl={tempatLahir + ', ' + formatDateMounth(tglLahir)} kerja={pekerjaan}
+            negara={negara} status={status} agama={agama} alamat={alamat} rtrw={rtrw} maksud={maksud}
+          />
 
-              <div className="my-table mb-2">
-                <div className="text-left">Yang bertanda tangan dibawah ini:</div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Nama</div> : {namaPegawai}
-                  {/* <div>: <span id="namaPegawai"></span></div> */}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Jabatan</div> : {jabatanPegawai}
-                  {/* <div>: <span id="jabatanPegawai"></span> </div> */}
-                </div>
-              </div>
+          <Paragraf>
+            Sepanjang pengamatan kami serta pengetahuan kami, hingga saat ini dikeluarkan surat 
+            keterangan ini, Oknum tersebut belum pernah tersangkut dalam perkara pidana kriminal, 
+            serta berkelakuan baik terhadap masyarakat sesuai dengan Surat Pengantar RT/RW 
+            Nomor: {formatedNoSurat(noSurat)}, tanggal {date} {monthName} {year}.
+          </Paragraf>
 
-              <div className="my-table mb-2">
-                <div className="text-left">Dengan ini menerangkan bahwa:</div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Nama</div> : {nama}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Jenis kelamin</div> : {jk === 'l' ? 'laki-laki' : 'perempuan'}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Tempat/Tgl. lahir</div>: {tempatLahir}, {tglLahir}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Pekerjaan</div> : {pekerjaan}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Kewarganegaraan</div> : {negara}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Status</div> : {status}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Agama</div> : {agama}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Alamat</div> : {alamat}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">NIK</div> : {nik}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">RT/RW</div> : {rtrw}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Maksud</div> : {maksud}
-                </div>
-              </div>
+          <Paragraf>Demikian Surat Keterangan ini dibuat untuk dipergunakan seperlunya.</Paragraf>
 
-              <p className="text-justify">
-                Sepanjang pengamatan kami serta pengetahuan kami, hingga saat ini dikeluarkan surat 
-                keterangan ini, Oknum tersebut belum pernah tersangkut dalam perkara pidana kriminal, 
-                serta berkelakuan baik terhadap masyarakat sesuai dengan Surat Pengantar RT/RW 
-                Nomor: {noSurat}, tanggal {date} {monthName} {year}.
-              </p>
-            
-              <p className="text-justify indent-10">
-                Demikian Surat Keterangan ini dibuat untuk dipergunakan seperlunya.
-              </p>
+          <FooterTtd nama={namaPegawai} jabatan={jabatanPegawai} nip={nipPegawai} />
+        
+        </BaseSurat>
 
-              <div className="flex justify-end">
-                <div className="ttd">
-                  <div className="mb-20">
-                    <div className="my-4">Palu, {date} {monthName} {year} </div>
-                    <div>An. LURAH BALAROA</div>
-                    <div>{jabatanPegawai}</div>
-                    {/* <div id="jabatanPegawaiTtd">Kasi Pemberdayaan Masyarakat</div> */}
-                    {/* <!-- <div>Dan Kesejahteraan Sosial</div> --> */}
-                  </div>
-
-                  <div className="text-md"><u className="uppercase">{namaPegawai}</u></div>
-                  <div>NIP: {nipPegawai}</div>
-                </div>
-              </div>
-            
-            </div>
-
-          </div>
-        </div>
         <div className="modal-action pt-4">
           <BasicButton onClick={() => closeModal('suratPreview')} title='Close' className='bg-gray-500 text-white' />
-          <BasicButton onClick={printSurat} title='Print' />
+          <BasicButton onClick={() => printSurat('printArea')} title='Print' />
         </div>
       </BaseModal>
 
