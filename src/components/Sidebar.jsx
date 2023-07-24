@@ -64,6 +64,8 @@ const Sidebar = () => {
             setActivePage('dashboard')
         } else if (location.pathname === '/pegawai') {
             setActivePage('pegawai')
+        } else if (location.pathname === '/surat') {
+            setActivePage('surat')
         } else if (location.pathname === '/surat/berkelakuan-baik') {
             setActivePage('berkelakuan-baik')
         }
@@ -90,6 +92,12 @@ const Sidebar = () => {
                             <a onClick={() => navigate('/pegawai')}>
                                 <span className="icon"><i className="mdi mdi-table"></i></span>
                                 <span className="menu-item-label">Pegawai</span>
+                            </a>
+                        </li>
+                        <li id='surat'>
+                            <a onClick={() => navigate('/surat')}>
+                                <span className="icon"><i className="mdi mdi-note-text-outline"></i></span>
+                                <span className="menu-item-label">Semua Surat</span>
                             </a>
                         </li>
                         <li className="" id="dropdownMenu" onClick={dropdownMenu} >
