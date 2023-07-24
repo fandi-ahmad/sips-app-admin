@@ -7,12 +7,12 @@ const callApi = (method, url, data = null) => {
     .catch(error => error.response);
 };
 
-export const GetWargaByNik = (nik) => {
-    return callApi('get', `${apiUrl}/warga?nik=${nik}`);
+export const GetWarga = (search, page, limit, nik) => {
+    return callApi('get', `${apiUrl}/warga?search=${search}&page=${page}&limit=${limit}&nik=${nik}`);
 };
-  
-export const GetSuratByType = (name) => {
-    return callApi('get', `${apiUrl}/surat/type?name=${name}`);
+
+export const GetSuratByType = (name, id, id_warga) => {
+    return callApi('get', `${apiUrl}/surat/type?name=${name}&id=${id}&id_warga=${id_warga}`);
 };
   
 export const CreateSuratByType = (data) => {

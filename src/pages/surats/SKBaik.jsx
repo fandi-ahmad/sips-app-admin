@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import Layout from '../../layouts/Layout'
 import { BasicButton } from '../../components/BaseButton'
-import { GetSuratByType, CreateSuratByType, GetWargaByNik, UpdateSuratByType } from '../../api/suratApi'   //api
+import { GetSuratByType, CreateSuratByType, GetWarga, UpdateSuratByType } from '../../api/suratApi'   //api
 import { GetPegawai } from '../../api/pegawaiApi'     // api
 import { BaseModal, openModal, closeModal, ModalLoading } from '../../components/BaseModal'
 import { BaseInput, SelectInput } from '../../components/BaseInput'
@@ -26,6 +26,7 @@ const SKBaik = () => {
   let suratName = 'surat keterangan berkelakuan baik'
   const [suratList, setSuratList] = useState([])
   const [pegawaiList, setPegawaiList] = useState([])
+  const [wargaList, setWargaList] = useState([])
 
   const [nama, setNama] = useState('')
   const [nik, setNik] = useState('')
@@ -49,10 +50,12 @@ const SKBaik = () => {
   const [nipPegawai, setNipPegawai] = useState('')
   const [jabatanPegawai, setJabatanPegawai] = useState('')
 
+  const [actText, setActText] = useState('')
+
  
   const getAllData = async () => {
     try {
-      const response = await GetSuratByType(suratName)
+      const response = await GetSuratByType(suratName, '', '')
       setSuratList(response.data)
     } catch (error) {
       console.log(error, '<-- error get data');
@@ -69,6 +72,9 @@ const SKBaik = () => {
   }
 
   const createNew = () => {
+    const select = getId('selectOpt')
+    select.click()
+    setActText('create')
     resetData()
     openModal('upsert')
     getId('btnCreate').classList.remove('hidden')
@@ -103,21 +109,10 @@ const SKBaik = () => {
 
       const response = await CreateSuratByType({
         nama_surat: 'surat keterangan berkelakuan baik',
-        nama: nama,
-        nik: nik,
-        jenis_kelamin: jk,
-        tempat_lahir: tempatLahir,
-        tanggal_lahir: tglLahir,
-        pekerjaan: pekerjaan,
-        kewarganegaraan: negara,
-        status: status,
-        agama: agama,
-        alamat: alamat,
-        rt_rw: rtrw,
-        no_surat: noSurat,
-        no_surat_number: noSuratNumber,
-        maksud: maksud,
-        id_pegawai: idPegawai
+        nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
+        tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
+        status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
+        no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai
       })
 
       closeModal('modal-loading')
@@ -154,10 +149,11 @@ const SKBaik = () => {
   const resetData = () => {
     setNama(''); setTempatLahir(''); setTglLahir(''); setJk(''); setPekerjaan('')
     setNegara('indonesia'); setStatus(''); setAgama(''); setAlamat(''); setRtrw('')
-    setNoSurat(''); setNoSuratNumber(''); setMaksud(''); setIdPegawai('')
+    setNoSurat(''); setNoSuratNumber(''); setMaksud(''); setIdPegawai(''); setNik('')
   }
 
   const editSurat = (surat) => {
+    setActText('update')
     getId('btnCreate').classList.add('hidden')
     getId('btnUpdate').classList.remove('hidden')
     openModal('upsert')
@@ -171,22 +167,10 @@ const SKBaik = () => {
 
       const res = await UpdateSuratByType({
         // nama_surat: 'surat keterangan berkelakuan baik',
-        id: idSurat,
-        nama: nama,
-        nik: nik,
-        jenis_kelamin: jk,
-        tempat_lahir: tempatLahir,
-        tanggal_lahir: tglLahir,
-        pekerjaan: pekerjaan,
-        kewarganegaraan: negara,
-        status: status,
-        agama: agama,
-        alamat: alamat,
-        rt_rw: rtrw,
-        no_surat: noSurat,
-        no_surat_number: noSuratNumber,
-        maksud: maksud,
-        id_pegawai: idPegawai
+        id: idSurat, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
+        tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
+        status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
+        no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai
       })
 
       closeModal('modal-loading')
@@ -199,8 +183,19 @@ const SKBaik = () => {
 
   const checkNikWarga = async () => {
     try {
-      const response = await GetWargaByNik(nik)
+      getId('selectOpt').classList.remove('hidden')
+      const response = await GetWarga(nik, '', '', '')
       response.total_data >= 1 ? getId('nikIcon').classList.remove('hidden') : getId('nikIcon').classList.add('hidden')
+      setWargaList(response.data)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const getAllWarga = async () => {
+    try {
+      const response = await GetWarga(nik, '', '', '')
+      setWargaList(response.data)
     } catch (error) {
       console.log(error);
     }
@@ -211,10 +206,40 @@ const SKBaik = () => {
     setDataSurat(surat)
   }
 
+  const inputSearchSize = () => {
+    const inputNik = getId('nik').offsetWidth
+    getId('selectOpt').style.width = inputNik+'px'
+  }
+
+  const getWargaByNik = async (nikWarga) => {
+    try {
+      getId('selectOpt').classList.add('hidden')
+      const resWarga = await GetWarga('', '', '', nikWarga)
+      const w = resWarga.data[0]    // <== data warga
+
+      setNama(w.nama)
+      setNik(w.nik)
+      setTempatLahir(w.tempat_lahir)
+      setTglLahir(w.tanggal_lahir)
+      setJk(w.jenis_kelamin)
+      setPekerjaan(w.pekerjaan)
+      setNegara(w.kewarganegaraan)
+      setStatus(w.status)
+      setAgama(w.agama)
+      setAlamat(w.alamat)
+      setRtrw(w.rt_rw)
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
 
   useEffect(() => {
     getAllData()
     getAllPegawai()
+    inputSearchSize()
+    getAllWarga()
   }, [])
 
   return (
@@ -265,9 +290,17 @@ const SKBaik = () => {
       </Layout>
 
       {/* ===== upsert modal ===== */}
-      <BaseModal id='upsert' title={`create surat`} classSize='w-screen'>
+      <BaseModal onClick={() => getId('selectOpt').classList.add('hidden')} id='upsert' title={`${actText} surat`} classSize='w-screen'>
         <div className='grid grid-cols-4 gap-4'>
-          <BaseInput value={nik} onChange={handleInput} onKeyUp={checkNikWarga} name='NIK' label={<>NIK <span className="mdi mdi-circle text-red-500 hidden" id='nikIcon'></span></>} />
+          <BaseInput autoComplete='off' id='nik' value={nik} onChange={handleInput} onKeyUp={checkNikWarga} name='NIK' label={<>NIK <span className="mdi mdi-circle text-red-500 hidden" id='nikIcon'></span></>} />
+          <div className='mt-16 border border-gray-800' style={{ position: 'absolute' }}>
+            <select id="selectOpt" className='bg-white overflow-hidden hidden overflow-x-auto cursor-pointer' size={'5'}>
+              {wargaList.map((warga) => (
+                <option key={warga.id} value={warga.nik} onClick={() => getWargaByNik(warga.nik)}>{warga.nama} - {warga.nik}</option>
+              ))}
+            </select>
+          </div>
+
           <BaseInput value={nama} onChange={handleInput} name='nama' />
           <BaseInput value={tempatLahir} onChange={handleInput} name='tempat lahir' />
           <BaseInput value={tglLahir} onChange={handleInput} name='tanggal lahir' type='date' />
@@ -300,7 +333,6 @@ const SKBaik = () => {
       <BaseModal id='suratPreview' classSize='w-screen min-h-screen'>
         <BaseSurat>
           <KopSurat surat='surat keterangan berkelakuan baik' no={noSurat} />
-
           <HeadPegawai nama={namaPegawai} jabatan={jabatanPegawai} />
 
           <BiodataWarga
@@ -316,9 +348,7 @@ const SKBaik = () => {
           </Paragraf>
 
           <Paragraf>Demikian Surat Keterangan ini dibuat untuk dipergunakan seperlunya.</Paragraf>
-
           <FooterTtd nama={namaPegawai} jabatan={jabatanPegawai} nip={nipPegawai} />
-        
         </BaseSurat>
 
         <div className="modal-action pt-4">
