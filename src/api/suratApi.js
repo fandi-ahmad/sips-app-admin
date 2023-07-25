@@ -11,8 +11,8 @@ export const GetWarga = (search, page, limit, nik) => {
     return callApi('get', `${apiUrl}/warga?search=${search}&page=${page}&limit=${limit}&nik=${nik}`);
 };
 
-export const GetSuratByType = (name, id, id_warga) => {
-    return callApi('get', `${apiUrl}/surat/type?name=${name}&id=${id}&id_warga=${id_warga}`);
+export const GetSuratByType = (name, id, id_warga, no_surat) => {
+    return callApi('get', `${apiUrl}/surat/type?name=${name}&id=${id}&id_warga=${id_warga}&no_surat=${no_surat}`);
 };
   
 export const CreateSuratByType = (data) => {

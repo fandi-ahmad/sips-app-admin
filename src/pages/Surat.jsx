@@ -55,7 +55,7 @@ const Surat = () => {
 
   const getAllData = async (namaSurat = '') => {
     try {
-      const response = await GetSuratByType(namaSurat, '', '')
+      const response = await GetSuratByType(namaSurat, '', '', '')
       setSuratList(response.data)
     } catch (error) {
       console.log(error, '<-- error get surat');
@@ -113,25 +113,35 @@ const Surat = () => {
   const createSurat = async () => {
     try {
       if (
-        suratName === '' || nama === '' || nik === '' || jk === '' || tempatLahir === '' || tglLahir === '' ||
+        suratName === '' 
+        || nama === '' || nik === '' || jk === '' || tempatLahir === '' || tglLahir === '' ||
         pekerjaan === '' || negara === '' || status === '' || agama === '' || alamat === '' || rtrw === '' ||
         noSuratNumber === '' || maksud === '' || idPegawai === ''
       ) {
         AlertError('input tidak boleh kosaong')
       } else {
-        closeModal('upsert')
-        openModal('modal-loading')
-  
-        await CreateSuratByType({
-          nama_surat: suratName, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
-          tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
-          status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
-          no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai
-        })
-  
-        closeModal('modal-loading')
-        AlertSuccess('surat berhasil dibuat')
-        getAllData()
+        const checkNoSurat = await GetSuratByType('', '', '', noSurat)
+
+        console.log(checkNoSurat);
+        if (checkNoSurat.status !== 404) {
+          AlertError('nomor surat sudah terdaftar')
+        } else {
+          closeModal('upsert')
+          openModal('modal-loading')
+    
+          await CreateSuratByType({
+            nama_surat: suratName, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
+            tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
+            status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
+            no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai
+          })
+    
+          closeModal('modal-loading')
+          AlertSuccess('surat berhasil dibuat')
+          getAllData()
+          
+        }
+        
       }
     } catch (error) {
       AlertError()
