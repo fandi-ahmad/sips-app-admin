@@ -23,7 +23,7 @@ export const SelectInput = (props) => {
             <select value={props.value} name={props.name} onChange={props.onChange} onClick={props.onClick}
                 className='block w-full mt-1 text-sm bg-transparent p-2 border border-gray-600 rounded-md form-input'
             >
-                <option disabled value=""></option>
+                <option disabled value="">{props.placeholder}</option>
                 {props.children}
             </select>
         </label>

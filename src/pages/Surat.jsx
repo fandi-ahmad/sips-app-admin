@@ -53,9 +53,9 @@ const Surat = () => {
 
   const [actText, setActText] = useState('')
 
-  const getAllData = async () => {
+  const getAllData = async (namaSurat = '') => {
     try {
-      const response = await GetSuratByType('', '', '')
+      const response = await GetSuratByType(namaSurat, '', '')
       setSuratList(response.data)
     } catch (error) {
       console.log(error, '<-- error get surat');
@@ -73,8 +73,12 @@ const Surat = () => {
   }
 
   const nextCreateSurat = () => {
-    closeModal('createSuratName')
-    openModal('upsert')
+    if (suratName === '' || suratName === 'all') {
+      AlertError('pilih nama surat terlebih dahulu')
+    } else {
+      closeModal('createSuratName')
+      openModal('upsert')
+    }
   }
 
   const previousCreateSuratName = () => {
@@ -108,20 +112,27 @@ const Surat = () => {
 
   const createSurat = async () => {
     try {
-      closeModal('upsert')
-      openModal('modal-loading')
-
-      const response = await CreateSuratByType({
-        nama_surat: 'surat keterangan berkelakuan baik',
-        nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
-        tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
-        status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
-        no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai
-      })
-
-      closeModal('modal-loading')
-      AlertSuccess('surat berhasil dibuat')
-      getAllData()
+      if (
+        suratName === '' || nama === '' || nik === '' || jk === '' || tempatLahir === '' || tglLahir === '' ||
+        pekerjaan === '' || negara === '' || status === '' || agama === '' || alamat === '' || rtrw === '' ||
+        noSuratNumber === '' || maksud === '' || idPegawai === ''
+      ) {
+        AlertError('input tidak boleh kosaong')
+      } else {
+        closeModal('upsert')
+        openModal('modal-loading')
+  
+        await CreateSuratByType({
+          nama_surat: suratName, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
+          tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
+          status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
+          no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai
+        })
+  
+        closeModal('modal-loading')
+        AlertSuccess('surat berhasil dibuat')
+        getAllData()
+      }
     } catch (error) {
       AlertError()
     }
@@ -155,7 +166,7 @@ const Surat = () => {
   const resetData = () => {
     setNama(''); setTempatLahir(''); setTglLahir(''); setJk(''); setPekerjaan('')
     setNegara('indonesia'); setStatus(''); setAgama(''); setAlamat(''); setRtrw('')
-    setNoSurat(''); setNoSuratNumber(''); setMaksud(''); setIdPegawai(''); setNik('')
+    setNoSurat(''); setNoSuratNumber(''); setMaksud(''); setIdPegawai(''); setNik(''); setSuratName('')
   }
 
   const editSurat = (surat) => {
@@ -262,8 +273,30 @@ const Surat = () => {
         title='semua surat'
         button={<BasicButton onClick={createNew} iconShow='block' title='Create New'/>}
       >
+        
+
         <div className="card has-table">
-          <div className="card-content">
+          <div className="card-content text-black">
+            <header className="card-header">
+              <p className="card-header-title">
+                <span className="icon"><i className="mdi mdi-note-text-outline"></i></span>
+                {/* daftar */}
+              </p>
+              <div className='flex items-center mr-2'>Filter Nama Surat:</div>
+              <SelectInput value={suratName} name='nama surat' label=' ' onChange={handleInput}
+                onClick={() => suratName === 'all' ? getAllData() : getAllData(suratName) }
+              >
+                <option value="all">select All</option>
+                <option value="surat keterangan berkelakuan baik">surat keterangan berkelakuan baik</option>
+                <option value="surat keterangan belum memiliki rumah">surat keterangan belum memiliki rumah</option>
+                <option value="surat keterangan tidak mampu">surat keterangan tidak mampu</option>
+                <option value="surat keterangan belum bekerja">surat keterangan belum bekerja</option>
+                <option value="surat keterangan belum menikah">surat keterangan belum menikah</option>
+              </SelectInput>
+              <a className="card-header-icon cursor-pointer" onClick={() => window.location.reload()}>
+                <span className="icon"><i className="mdi mdi-reload"></i></span>
+              </a>
+            </header>
             <table className='text-slate-800'>
               <thead>
                 <tr>
