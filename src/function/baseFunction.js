@@ -29,6 +29,21 @@ export const formatDateMounth = (dateString) => {
   return formattedDate;
 }
 
+export const formatDateFromISO = (dateString) => {
+  const tanggalISO = dateString
+  const tanggalObjek = new Date(tanggalISO);
+  const namaBulan = [
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+  ];
+
+  const tanggal = tanggalObjek.getUTCDate();
+  const bulan = namaBulan[tanggalObjek.getUTCMonth()];
+  const tahun = tanggalObjek.getUTCFullYear();
+  const hasil = `${tanggal} ${bulan} ${tahun}`;
+  return hasil
+}
+
 export const formatedNoSurat = (inputString) => {
   const regex = /^\d{3}/; // Memilih tiga digit angka di bagian depan string
   return inputString.replace(regex, '- '); // Mengganti tiga digit angka dengan tanda "-"

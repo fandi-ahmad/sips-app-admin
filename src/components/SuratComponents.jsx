@@ -38,7 +38,7 @@ export const KopSurat = (props) => {
       <hr className="mb-2" style={{ border: '2px solid black', marginTop: '1px' }} />
 
       <div className="mb-4">
-        <u><b className='uppercase'>{props.surat}</b></u>
+        <u><b className='uppercase text-xl'>{props.surat}</b></u>
         <p className="leading-none">NOMOR: {props.no}</p>
       </div>
     </>
@@ -117,7 +117,9 @@ export const FooterTtd = (props) => {
     <div className="flex justify-end">
       <div className="ttd">
         <div className="mb-20">
-          <div className="my-4">Palu, {date} {monthName} {year} </div>
+          {/* <div className="my-4">Palu, {date} {monthName} {year} </div> */}
+          {/* <div className="my-4">Palu, {props.date} {props.month} {props.year} </div> */}
+          <div className="my-4">Palu, {props.date}</div>
           <div>An. LURAH BALAROA</div>
           <div>{props.jabatan}</div>
           {/* <div id="jabatanPegawaiTtd">Kasi Pemberdayaan Masyarakat</div> */}

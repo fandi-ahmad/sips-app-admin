@@ -6,7 +6,7 @@ import { GetPegawai } from '../../api/pegawaiApi'     // api
 import { BaseModal, openModal, closeModal, ModalLoading } from '../../components/BaseModal'
 import { BaseInput, SelectInput } from '../../components/BaseInput'
 import { AlertError, AlertSuccess } from '../../components/SweetAlert'
-import { getId, formatDateMounth, formatedNoSurat, printSurat } from '../../function/baseFunction'
+import { getId, formatDateMounth, formatedNoSurat, printSurat, formatDateFromISO } from '../../function/baseFunction'
 import { FooterTtd, BiodataWarga, HeadPegawai, KopSurat, BaseSurat, Paragraf } from '../../components/SuratComponents'
 
 
@@ -267,7 +267,7 @@ const SKBaik = () => {
                     <td data-label="No Surat"><small>{surat.no_surat}</small></td>
                     <td data-label="Nama Warga">{surat.warga.nama}</td>
                     <td data-label="TTL">{surat.warga.tempat_lahir}, {formatDateMounth(surat.warga.tanggal_lahir)}</td>
-                    <td data-label="Created"><small>{surat.createdAt}</small></td>
+                    <td data-label="Created"><small>{formatDateFromCreatedAt(surat.createdAt)}</small></td>
                     <td className="actions-cell">
                       <div className="buttons right nowrap">
                         <button onClick={() => printSuratBySelected(surat)} className="button small blue">

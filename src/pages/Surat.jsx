@@ -6,7 +6,7 @@ import { GetPegawai } from '../api/pegawaiApi'     // api
 import { BaseModal, openModal, closeModal, ModalLoading } from '../components/BaseModal'
 import { BaseInput, SelectInput } from '../components/BaseInput'
 import { AlertError, AlertSuccess } from '../components/SweetAlert'
-import { getId, formatDateMounth, formatedNoSurat, printSurat } from '../function/baseFunction'
+import { getId, formatDateMounth, formatedNoSurat, printSurat, formatDateFromISO } from '../function/baseFunction'
 import { FooterTtd, BiodataWarga, HeadPegawai, KopSurat, BaseSurat, Paragraf } from '../components/SuratComponents'
 
 
@@ -45,6 +45,7 @@ const Surat = () => {
   const [noSuratNumber, setNoSuratNumber] = useState('')
   const [maksud, setMaksud] = useState('')
   const [suratName, setSuratName] = useState('')
+  const [suratCreatedAt, setSuratCreatedAt] = useState('')
 
   const [namaPegawai, setNamaPegawai] = useState('')
   const [nipPegawai, setNipPegawai] = useState('')
@@ -66,9 +67,19 @@ const Surat = () => {
     select.click()
     setActText('create')
     resetData()
-    openModal('upsert')
+    openModal('createSuratName')
     getId('btnCreate').classList.remove('hidden')
     getId('btnUpdate').classList.add('hidden')
+  }
+
+  const nextCreateSurat = () => {
+    closeModal('createSuratName')
+    openModal('upsert')
+  }
+
+  const previousCreateSuratName = () => {
+    closeModal('upsert')
+    openModal('createSuratName')
   }
 
   // ============================================================
@@ -132,10 +143,12 @@ const Surat = () => {
     setAgama(warga.agama)
     setAlamat(warga.alamat)
     setRtrw(warga.rt_rw)
+    setSuratName(surat.nama_surat)
     setIdSurat(surat.id)
     setNoSuratNumber(surat.no_surat_number)
     setNoSurat(surat.no_surat)
     setMaksud(surat.maksud)
+    setSuratCreatedAt(surat.createdAt)
     setIdPegawai(surat.pegawai.id_pegawai)
   }
 
@@ -255,8 +268,8 @@ const Surat = () => {
               <thead>
                 <tr>
                   <th></th>
-                  <th>No Surat</th>
                   <th>Nama Surat</th>
+                  <th>No Surat</th>
                   <th>Nama Warga</th>
                   <th>Created</th>
                 </tr>
@@ -268,7 +281,7 @@ const Surat = () => {
                     <td data-label="Nama Surat"><small>{surat.nama_surat}</small></td>
                     <td data-label="No Surat"><small>{surat.no_surat}</small></td>
                     <td data-label="Nama Warga">{surat.warga.nama}</td>
-                    <td data-label="Created"><small>{surat.createdAt}</small></td>
+                    <td data-label="Created">{formatDateFromISO(surat.createdAt)}</td>
                     <td className="actions-cell">
                       <div className="buttons right nowrap">
                         <button onClick={() => printSuratBySelected(surat)} className="button small blue">
@@ -288,6 +301,21 @@ const Surat = () => {
         </div>
       </Layout>
 
+      {/* ===== select surat name before create ===== */}
+      <BaseModal id='createSuratName' title='create surat'>
+        <SelectInput value={suratName} name='nama surat' onChange={handleInput} >
+          <option value="surat keterangan berkelakuan baik">surat keterangan berkelakuan baik</option>
+          <option value="surat keterangan belum memiliki rumah">surat keterangan belum memiliki rumah</option>
+          <option value="surat keterangan tidak mampu">surat keterangan tidak mampu</option>
+          <option value="surat keterangan belum bekerja">surat keterangan belum bekerja</option>
+          <option value="surat keterangan belum menikah">surat keterangan belum menikah</option>
+        </SelectInput>
+        <div className="modal-action pt-4">
+          <BasicButton onClick={() => closeModal('createSuratName')} title='Close' className='bg-gray-500 text-white' />
+          <BasicButton onClick={nextCreateSurat} title='Next'/>
+        </div>
+      </BaseModal>
+
       {/* ===== upsert modal ===== */}
       <BaseModal onClick={() => getId('selectOpt').classList.add('hidden')} id='upsert' title={`${actText} surat`} classSize='w-screen'>
         <div className='grid grid-cols-4 gap-4'>
@@ -299,15 +327,6 @@ const Surat = () => {
               ))}
             </select>
           </div>
-          <SelectInput value={suratName} name='nama surat' onChange={handleInput} >
-            <option value="surat keterangan berkelakuan baik">surat keterangan berkelakuan baik</option>
-            <option value="surat keterangan belum memiliki rumah">surat keterangan belum memiliki rumah</option>
-            <option value="surat keterangan tidak mampu">surat keterangan tidak mampu</option>
-            <option value="surat keterangan belum bekerja">surat keterangan belum bekerja</option>
-            <option value="surat keterangan belum menikah">surat keterangan belum menikah</option>
-          </SelectInput>
-         
-
           <BaseInput value={nama} onChange={handleInput} name='nama' />
           <BaseInput value={tempatLahir} onChange={handleInput} name='tempat lahir' />
           <BaseInput value={tglLahir} onChange={handleInput} name='tanggal lahir' type='date' />
@@ -331,16 +350,21 @@ const Surat = () => {
           </SelectInput>
         </div>
         <div className="modal-action pt-4">
-          <BasicButton onClick={() => closeModal('upsert')} title='Close' className='bg-gray-500 text-white' />
-          <BasicButton onClick={createSurat} id='btnCreate' title='Create'/>
-          <BasicButton onClick={updateSurat} id='btnUpdate' title='Update'/>
+          <div id='btnCreate'>
+            <BasicButton onClick={previousCreateSuratName} title='Previous' className='bg-gray-500 text-white mr-2' />
+            <BasicButton onClick={createSurat} title='Create'/>
+          </div>
+          <div id='btnUpdate'>
+            <BasicButton onClick={() => closeModal('upsert')} title='Close' className='bg-gray-500 text-white mr-2' />
+            <BasicButton onClick={updateSurat} title='Update'/>
+          </div>
         </div>
       </BaseModal>
 
       {/* ===== preview and print surat modal ===== */}
       <BaseModal id='suratPreview' classSize='w-screen min-h-screen'>
         <BaseSurat>
-          <KopSurat surat='surat keterangan berkelakuan baik' no={noSurat} />
+          <KopSurat surat={suratName} no={noSurat} />
           <HeadPegawai nama={namaPegawai} jabatan={jabatanPegawai} />
 
           <BiodataWarga
@@ -356,7 +380,7 @@ const Surat = () => {
           </Paragraf>
 
           <Paragraf>Demikian Surat Keterangan ini dibuat untuk dipergunakan seperlunya.</Paragraf>
-          <FooterTtd nama={namaPegawai} jabatan={jabatanPegawai} nip={nipPegawai} />
+          <FooterTtd date={formatDateFromISO(suratCreatedAt)} nama={namaPegawai} jabatan={jabatanPegawai} nip={nipPegawai} />
         </BaseSurat>
 
         <div className="modal-action pt-4">
