@@ -61,44 +61,49 @@ export const HeadPegawai = (props) => {
   )
 }
 
+const FormTitle = (props) => {
+  return (
+    <div className="flex flex-row" id={props.id}>
+      <div className="w-60 ml-10 text-left">{props.title}</div> : {props.data}
+    </div>
+  )
+}
+
 export const BiodataWarga = (props) => {
   return (
     <div className="my-table mb-2">
       <div className="text-left">Dengan ini menerangkan bahwa:</div>
+      <FormTitle title='Nama' data={props.nama} />
+      <FormTitle title='NIK' data={props.nik} />
+      <FormTitle title='Jenis Kelamis' data={props.jk === 'l' ? 'laki-laki' : 'perempuan'} />
+      <FormTitle title='Tempat/Tanggal Lahir' data={props.ttl} />
+      <FormTitle title='Pekerjaan' data={props.kerja} />
+      <FormTitle title='Kewarganegaraan' data={props.negara} />
+      <FormTitle title='Status' data={props.status} />
+      <FormTitle title='Agama' data={props.agama} />
+      <FormTitle title='Alamat' data={props.alamat} />
+      <FormTitle title='RT/RW' data={props.rtrw} />
+      <FormTitle title='maksud' data={props.maksud} id='maksudWarga' />
+    </div>
+  )
+}
+
+export const DataUsaha = (props) => {
+  return (
+    <div className="my-table mb-2">
+      <div className="text-left">Benar yang bersangkutan diatas mempunyai Usaha yaitu:</div>
       <div className="flex flex-row">
-        <div className="w-60 ml-10 text-left">Nama</div> : {props.nama}
+        <div className="w-60 ml-10 text-left">Nama Usaha</div> : -
       </div>
-      <div className="flex flex-row">
-        <div className="w-60 ml-10 text-left">NIK</div> : {props.nik}
-      </div>
-      <div className="flex flex-row">
-        <div className="w-60 ml-10 text-left">Jenis kelamin</div> : {props.jk === 'l' ? 'laki-laki' : 'perempuan'}
-      </div>
-      <div className="flex flex-row">
-        <div className="w-60 ml-10 text-left">Tempat/Tgl. lahir</div>: {props.ttl}
-      </div>
-      <div className="flex flex-row">
-        <div className="w-60 ml-10 text-left">Pekerjaan</div> : {props.kerja}
-      </div>
-      <div className="flex flex-row">
-        <div className="w-60 ml-10 text-left">Kewarganegaraan</div> : {props.negara}
-      </div>
-      <div className="flex flex-row">
-        <div className="w-60 ml-10 text-left">Status</div> : {props.status}
-      </div>
-      <div className="flex flex-row">
-        <div className="w-60 ml-10 text-left">Agama</div> : {props.agama}
-      </div>
-      <div className="flex flex-row">
-        <div className="w-60 ml-10 text-left">Alamat</div> : {props.alamat}
-      </div>
-      
-      <div className="flex flex-row">
-        <div className="w-60 ml-10 text-left">RT/RW</div> : {props.rtrw}
-      </div>
-      <div className="flex flex-row">
-        <div className="w-60 ml-10 text-left">Maksud</div> : {props.maksud}
-      </div>
+      <FormTitle title='Jenis Usaha' data='Jualan Kue' />
+      <FormTitle title='NPWP' data='' />
+      <FormTitle title='Nomor Izin Usaha' data='' />
+      <FormTitle title='Nomor Fiskal' data='' />
+      <FormTitle title='Luas Tempat Usaha' data='' />
+      <FormTitle title='Alamat Usaha' data='' />
+      <FormTitle title='Tahun Berdiri Usaha' data='' />
+      <FormTitle title='Maksud' data='' />
+
     </div>
   )
 }
