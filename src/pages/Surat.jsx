@@ -7,7 +7,7 @@ import { BaseModal, openModal, closeModal, ModalLoading } from '../components/Ba
 import { BaseInput, SelectInput } from '../components/BaseInput'
 import { AlertError, AlertSuccess } from '../components/SweetAlert'
 import { getId, formatDateMounth, formatedNoSurat, printSurat, formatDateFromISO } from '../function/baseFunction'
-import { FooterTtd, BiodataWarga, HeadPegawai, KopSurat, BaseSurat, Paragraf } from '../components/SuratComponents'
+import { FooterTtd, BiodataWarga, HeadPegawai, KopSurat, BaseSurat, Paragraf, DataUsaha } from '../components/SuratComponents'
 
 
 const Surat = () => {
@@ -21,8 +21,9 @@ const Surat = () => {
   const monthRomawis = [ "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII" ];
   const monthName = monthNames[month];
   const monthRomawi = monthRomawis[month]
-  const suratKey = 200
+  // const suratKey = 200
 
+  const [suratKey, setSuratKey] = useState(200.1)
   const [suratList, setSuratList] = useState([])
   const [pegawaiList, setPegawaiList] = useState([])
   const [wargaList, setWargaList] = useState([])
@@ -79,6 +80,12 @@ const Surat = () => {
       closeModal('createSuratName')
       openModal('upsert')
     }
+
+    suratName === 'surat keterangan berkelakuan baik' ? setSuratKey(301) : null
+    suratName === 'surat keterangan usaha' || suratName === 'surat keterangan domisili usaha' ? setSuratKey(517) : null
+    suratName === 'surat keterangan belum memiliki rumah' ? setSuratKey(460) : null
+    suratName === 'surat keterangan belum bekerja' || suratName === 'surat keterangan belum menikah' ? setSuratKey(474.5) : null
+    
   }
 
   const previousCreateSuratName = () => {
@@ -121,8 +128,6 @@ const Surat = () => {
         AlertError('input tidak boleh kosaong')
       } else {
         const checkNoSurat = await GetSuratByType('', '', '', noSurat)
-
-        console.log(checkNoSurat);
         if (checkNoSurat.status !== 404) {
           AlertError('nomor surat sudah terdaftar')
         } else {
@@ -139,9 +144,7 @@ const Surat = () => {
           closeModal('modal-loading')
           AlertSuccess('surat berhasil dibuat')
           getAllData()
-          
         }
-        
       }
     } catch (error) {
       AlertError()
@@ -414,6 +417,8 @@ const Surat = () => {
             nama={nama} nik={nik} jk={jk} ttl={tempatLahir + ', ' + formatDateMounth(tglLahir)} kerja={pekerjaan}
             negara={negara} status={status} agama={agama} alamat={alamat} rtrw={rtrw} maksud={maksud}
           />
+
+          {/* <DataUsaha/> */}
 
           <Paragraf>
             Sepanjang pengamatan kami serta pengetahuan kami, hingga saat ini dikeluarkan surat 

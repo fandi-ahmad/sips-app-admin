@@ -55,7 +55,7 @@ const SKBaik = () => {
  
   const getAllData = async () => {
     try {
-      const response = await GetSuratByType(suratName, '', '')
+      const response = await GetSuratByType(suratName, '', '', '')
       setSuratList(response.data)
     } catch (error) {
       console.log(error, '<-- error get data');
@@ -267,7 +267,7 @@ const SKBaik = () => {
                     <td data-label="No Surat"><small>{surat.no_surat}</small></td>
                     <td data-label="Nama Warga">{surat.warga.nama}</td>
                     <td data-label="TTL">{surat.warga.tempat_lahir}, {formatDateMounth(surat.warga.tanggal_lahir)}</td>
-                    <td data-label="Created"><small>{formatDateFromCreatedAt(surat.createdAt)}</small></td>
+                    <td data-label="Created">{formatDateFromISO(surat.createdAt)}</td>
                     <td className="actions-cell">
                       <div className="buttons right nowrap">
                         <button onClick={() => printSuratBySelected(surat)} className="button small blue">

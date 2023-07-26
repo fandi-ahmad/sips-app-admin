@@ -5,7 +5,7 @@ import { BaseModal, ModalLoading, openModal, closeModal } from '../components/Ba
 import Layout from '../layouts/Layout'
 import { BaseInput } from '../components/BaseInput'
 import { AlertError, AlertSuccess, AlertConfirm } from '../components/SweetAlert'
-import { getId } from '../function/baseFunction'
+import { getId, formatDateFromISO } from '../function/baseFunction'
 
 export const Pegawai = () => {
 
@@ -150,7 +150,7 @@ export const Pegawai = () => {
                     <td data-label="Nama">{pegawai.nama}</td>
                     <td data-label="Jabatan">{pegawai.jabatan}</td>
                     <td data-label="NIP">{pegawai.nip}</td>
-                    <td data-label="Created"><small>{pegawai.createdAt}</small></td>
+                    <td data-label="Created">{formatDateFromISO(pegawai.createdAt)}</td>
                     <td className="actions-cell">
                       <div className="buttons right nowrap">
                         <button onClick={() => editPegawai(pegawai)} id="editButton" className="button small green">
