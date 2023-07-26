@@ -56,7 +56,7 @@ const Surat = () => {
 
   const getAllData = async (namaSurat = '') => {
     try {
-      const response = await GetSuratByType(namaSurat, '', '', '')
+      const response = await GetSuratByType(namaSurat, '', '', '', '')
       setSuratList(response.data)
     } catch (error) {
       console.log(error, '<-- error get surat');
@@ -120,14 +120,13 @@ const Surat = () => {
   const createSurat = async () => {
     try {
       if (
-        suratName === '' 
-        || nama === '' || nik === '' || jk === '' || tempatLahir === '' || tglLahir === '' ||
+        suratName === '' || nama === '' || nik === '' || jk === '' || tempatLahir === '' || tglLahir === '' ||
         pekerjaan === '' || negara === '' || status === '' || agama === '' || alamat === '' || rtrw === '' ||
         noSuratNumber === '' || maksud === '' || idPegawai === ''
       ) {
         AlertError('input tidak boleh kosaong')
       } else {
-        const checkNoSurat = await GetSuratByType('', '', '', noSurat)
+        const checkNoSurat = await GetSuratByType('', '', '', noSurat, '')
         if (checkNoSurat.status !== 404) {
           AlertError('nomor surat sudah terdaftar')
         } else {

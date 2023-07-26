@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { BasicButton } from '../components/BaseButton'
 import { GetPegawai, CreatePegawai, DeletePegawai, UpdatePegawai } from '../api/pegawaiApi'   // api
+import { GetSuratByType } from '../api/suratApi'  //api
 import { BaseModal, ModalLoading, openModal, closeModal } from '../components/BaseModal'
 import Layout from '../layouts/Layout'
 import { BaseInput } from '../components/BaseInput'
@@ -77,9 +78,14 @@ export const Pegawai = () => {
   const confirmDeletePegawai = async (id) => {
     openModal('modal-loading')
     try {
-      const res = await DeletePegawai(id)
-      AlertSuccess('Delete Successfully')
-      getAllData()
+      const suratByIdPegawai = await GetSuratByType('', '', '', '', id)
+      if (suratByIdPegawai.status === 'failed') {
+        const res = await DeletePegawai(id)
+        AlertSuccess('Delete Successfully')
+        getAllData()
+      } else {
+        AlertError('pegawai sudah pernah menandatangani surat, menghapusnya akan menyebabkan kehilangan beberapa data surat')
+      }
     } catch (error) {
       AlertError()
     }
