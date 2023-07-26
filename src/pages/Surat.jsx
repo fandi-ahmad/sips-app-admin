@@ -239,7 +239,19 @@ const Surat = () => {
     }
   }
 
+  const hideShowDesc = (id) => {
+    getId('descSKBaik').classList.add('hidden')
+    getId('descSKRumah').classList.add('hidden')
+    getId(id).classList.remove('hidden')
+  }
+
   const printSuratBySelected = (surat) => {
+    const nameCek = surat.nama_surat
+    if (nameCek === 'surat keterangan berkelakuan baik') {
+      hideShowDesc('descSKBaik')
+    } else if (nameCek === 'surat keterangan belum memiliki rumah') {
+      hideShowDesc('descSKRumah')
+    }
     openModal('suratPreview')
     setDataSurat(surat)
   }
@@ -419,11 +431,17 @@ const Surat = () => {
 
           {/* <DataUsaha/> */}
 
-          <Paragraf>
+          <Paragraf id='descSKBaik'>
             Sepanjang pengamatan kami serta pengetahuan kami, hingga saat ini dikeluarkan surat 
             keterangan ini, Oknum tersebut belum pernah tersangkut dalam perkara pidana kriminal, 
             serta berkelakuan baik terhadap masyarakat sesuai dengan Surat Pengantar RT/RW 
-            Nomor: {formatedNoSurat(noSurat)}, tanggal {date} {monthName} {year}.
+            Nomor: {formatedNoSurat(noSurat)}, tanggal {formatDateFromISO(suratCreatedAt)}.
+          </Paragraf>
+
+          <Paragraf id='descSKRumah'>
+            Bahwa nama tersebut di atas adalah Warga/Penduduk Kelurahan Balaroa Kecamatan Palu Barat 
+            dan benar yang bersangkutan belum memiliki rumah, sesuai dengan Surat Pengantar 
+            Nomor: {formatedNoSurat(noSurat)}, tanggal {formatDateFromISO(suratCreatedAt)}.
           </Paragraf>
 
           <Paragraf>Demikian Surat Keterangan ini dibuat untuk dipergunakan seperlunya.</Paragraf>

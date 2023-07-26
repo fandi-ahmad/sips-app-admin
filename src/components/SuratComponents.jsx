@@ -15,7 +15,7 @@ export const BaseSurat = (props) => {
 
 export const Paragraf = (props) => {
   return (
-    <p className={`text-justify mt-2 ${props.className}`}>{props.children}</p>
+    <p id={props.id} className={`text-justify mt-2 ${props.className}`}>{props.children}</p>
   )
 }
 
@@ -63,7 +63,7 @@ export const HeadPegawai = (props) => {
 
 const FormTitle = (props) => {
   return (
-    <div className="flex flex-row" id={props.id}>
+    <div className={`flex flex-row ${props.className}`} id={props.id}>
       <div className="w-60 ml-10 text-left">{props.title}</div> : {props.data}
     </div>
   )
@@ -83,7 +83,7 @@ export const BiodataWarga = (props) => {
       <FormTitle title='Agama' data={props.agama} />
       <FormTitle title='Alamat' data={props.alamat} />
       <FormTitle title='RT/RW' data={props.rtrw} />
-      <FormTitle title='maksud' data={props.maksud} id='maksudWarga' />
+      <FormTitle title='maksud' data={props.maksud} id='maksudWarga' className='italic' />
     </div>
   )
 }
