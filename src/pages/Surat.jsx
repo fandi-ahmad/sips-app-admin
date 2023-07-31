@@ -303,7 +303,7 @@ const Surat = () => {
           <div className="card-content text-black">
             <header className="card-header">
               <p className="card-header-title">
-                <span className="icon"><i className="mdi mdi-note-text-outline"></i></span>
+                <span className="icon"><i className="fa-regular fa-file-lines"></i></span>
                 {/* daftar */}
               </p>
               <div className='flex items-center mr-2'>Filter Nama Surat:</div>
@@ -341,11 +341,11 @@ const Surat = () => {
                     <td data-label="Created">{formatDateFromISO(surat.createdAt)}</td>
                     <td className="actions-cell">
                       <div className="buttons right nowrap">
-                        <button onClick={() => printSuratBySelected(surat)} className="button small blue">
-                          <span className="icon"><i className="mdi mdi-eye"></i></span>
+                        <button onClick={() => printSuratBySelected(surat)} className="button small text-white bg-yellow-500 border-1 border-yellow-500 hover:bg-yellow-600 hover:border-yellow-600">
+                          <span className="icon"><i className="fa-solid fa-eye"></i></span>
                         </button>
-                        <button onClick={() => editSurat(surat)} id="editButton" className="button small green">
-                          <span className="icon"><i className="mdi mdi-pen"></i></span>
+                        <button onClick={() => editSurat(surat)} id="editButton" className="button small blue">
+                          <span className="icon"><i className="fa-solid fa-pen-to-square"></i></span>
                         </button>
                        
                       </div>

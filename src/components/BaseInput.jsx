@@ -66,6 +66,15 @@ export const InputFile = (props) => {
     )
 }
 
+export const InputCheck = (props) => {
+    return (
+        <label className={`block text-sm ${props.className}`}>
+            <span className="text-gray-700 capitalize">{props.label || props.name}</span>
+            <input checked={props.checked} onChange={props.onChange} name={props.name} id={props.id} type="checkbox" className={`toggle toggle-success form-control ${props.className}`} />
+        </label>
+    )
+}
+
 export const InputTextArea = (props) => {
     return (
         <label className={`block text-sm ${props.className}`}>

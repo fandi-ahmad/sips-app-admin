@@ -84,25 +84,25 @@ const Sidebar = () => {
                     <ul className="menu-list">
                         <li id='dashboard'>
                             <a onClick={() => navigate('/')}>
-                                <span className="icon"><i className="mdi mdi-desktop-mac"></i></span>
+                                <span className="icon"><i className="fa-solid fa-house"></i></span>
                                 <span className="menu-item-label">Dashboard</span>
                             </a>
                         </li>
                         <li id='pegawai'>
                             <a onClick={() => navigate('/pegawai')}>
-                                <span className="icon"><i className="mdi mdi-table"></i></span>
+                                <span className="icon"><i className="fa-solid fa-user"></i></span>
                                 <span className="menu-item-label">Pegawai</span>
                             </a>
                         </li>
                         <li id='surat'>
                             <a onClick={() => navigate('/surat')}>
-                                <span className="icon"><i className="mdi mdi-note-text-outline"></i></span>
+                                <span className="icon"><i className="fa-regular fa-file-lines"></i></span>
                                 <span className="menu-item-label">Semua Surat</span>
                             </a>
                         </li>
                         <li className="" id="dropdownMenu" onClick={dropdownMenu} >
                             <a className="dropdown">
-                                <span className="icon"><i className="mdi mdi-view-list"></i></span>
+                                <span className="icon"><i className="fa-solid fa-box-archive"></i></span>
                                 <span className="menu-item-label">Surat</span>
                                 <span className="icon"><i className="mdi mdi-plus" id="iconDropdown"></i></span>
                             </a>

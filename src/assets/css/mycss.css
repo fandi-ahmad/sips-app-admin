@@ -87,6 +87,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 a {
     border-radius: 4px !important;
+    color: white !important;
 }
 
 .text-tnr {
