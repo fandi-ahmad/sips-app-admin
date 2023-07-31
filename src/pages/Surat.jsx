@@ -223,7 +223,7 @@ const Surat = () => {
 
   const getAllPegawai = async () => {
     try {
-      const response = await GetPegawai()
+      const response = await GetPegawai('active')
       setPegawaiList(response.data)
     } catch (error) {
       AlertError()

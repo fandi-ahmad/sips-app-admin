@@ -209,7 +209,6 @@ export const Pegawai = () => {
           <BasicButton onClick={() => closeModal('upsert')} title='Close' className='bg-gray-500 text-white' />
           <BasicButton onClick={createPegawai} id='btnCreate' title='Create'/>
           <BasicButton onClick={updatePegawai} id='btnUpdate' title='Update'/>
-          <button onClick={() => console.log(isActive)}>cek</button>
         </div>
       </BaseModal>
 

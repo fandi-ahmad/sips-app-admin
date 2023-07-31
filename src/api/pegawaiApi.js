@@ -1,8 +1,8 @@
 import axios from "axios";
 const apiUrl = import.meta.env.VITE_APP_API 
 
-export const GetPegawai = () => {
-    return axios.get(`${apiUrl}/pegawai`,)
+export const GetPegawai = (url = '') => {
+    return axios.get(`${apiUrl}/pegawai/${url}`,)
     .then(response => response.data)
     .catch(error => error.response)
 }
