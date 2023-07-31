@@ -318,7 +318,7 @@ const Surat = () => {
                 <option value="surat keterangan belum menikah">surat keterangan belum menikah</option>
               </SelectInput>
               <a className="card-header-icon cursor-pointer" onClick={() => window.location.reload()}>
-                <span className="icon"><i className="mdi mdi-reload"></i></span>
+                <span className="icon text-black"><i className="fa-solid fa-rotate-right"></i></span>
               </a>
             </header>
             <table className='text-slate-800'>
