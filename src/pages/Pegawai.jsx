@@ -7,6 +7,7 @@ import Layout from '../layouts/Layout'
 import { BaseInput, InputCheck } from '../components/BaseInput'
 import { AlertError, AlertSuccess, AlertConfirm } from '../components/SweetAlert'
 import { getId, formatDateFromISO } from '../function/baseFunction'
+import { TableHeader, TablePaginate } from '../components/BaseTable'
 
 export const Pegawai = () => {
 
@@ -17,6 +18,10 @@ export const Pegawai = () => {
   const [idPegawai, setIdPegawai] = useState('')
   const [isActive, setIsActive] = useState(true)
 
+  const [page, setPage] = useState(1)
+  const [totalPage, setTotalPage] = useState(1)
+  const [limit, setLimit] = useState(10)
+
   const createNew = () => {
     openModal('upsert')
     getId('btnCreate').classList.remove('hidden')
@@ -25,8 +30,9 @@ export const Pegawai = () => {
 
   const getAllData = async () => {
     try {
-      const response = await GetPegawai()
+      const response = await GetPegawai(page, limit)
       setPegawaiList(response.data)
+      setTotalPage(response.total_page)
     } catch (error) {
       console.log(error);      
     }
@@ -147,10 +153,26 @@ export const Pegawai = () => {
     isActive == true ? setIsActive(false) : setIsActive(true)
   }
 
+  const activeBtn = 'button py-1 text-white bg-gray-500 border-gray-500 border-1 hover:bg-gray-600 flex items-center'
+  const disableBtn = 'button py-1 text-white flex items-center border-0 bg-gray-400'
+  const [prevClass, setPrevClass] = useState(activeBtn)
+  const [nextClass, setNextClass] = useState(activeBtn)
+  const [disabledPrev, setDisabledPrev] = useState(false)
+  const [disabledNext, setDisabledNext] = useState(false)
+  const [btnPaginateClass, setBtnPaginateClass] = useState('')
+
+  const checkPaginateBtn = () => {
+    page == 1 ? setPrevClass(disableBtn) : setPrevClass(activeBtn)
+    page == 1 ? setDisabledPrev(true) : setDisabledPrev(false)
+    totalPage == page ? setNextClass(disableBtn) : setNextClass(activeBtn)
+    totalPage == page ? setDisabledNext(true) : setDisabledNext(false)
+    totalPage == 1 ? setBtnPaginateClass('hidden') : setBtnPaginateClass('')
+  }
 
   useEffect(() => {
     getAllData()
-  }, [])
+    checkPaginateBtn()
+  }, [page, totalPage])
 
   return (
     <>
@@ -160,6 +182,7 @@ export const Pegawai = () => {
       >
         <div className="card has-table">
           <div className="card-content">
+            <TableHeader title='daftar pegawai'></TableHeader>
             <table className='text-slate-800'>
               <thead>
                 <tr>
@@ -194,6 +217,19 @@ export const Pegawai = () => {
                 ))}
               </tbody>
             </table>
+            <TablePaginate>
+              <small>Page {page} of {totalPage}</small>
+              <div className={`buttons ${btnPaginateClass}`}>
+                <button type="button" className={prevClass} onClick={() => setPage(page - 1)} disabled={disabledPrev}>
+                  <i className="fa-solid fa-angle-left pr-1"></i>
+                  <span className='pb-1'>previous</span>
+                </button>
+                <button type="button" className={nextClass} onClick={() => setPage(page + 1)} disabled={disabledNext}>
+                  <span className='pb-1'>next</span>
+                  <i className="fa-solid fa-angle-right pl-1"></i>
+                </button>
+              </div>
+            </TablePaginate>
           </div>
         </div>
       </Layout>
@@ -206,7 +242,7 @@ export const Pegawai = () => {
         <BaseInput value={nip} onChange={handleInput} name='nip' className='mb-5' />
         <InputCheck checked={isActive} onChange={handleInputToggle} name='active' />
         <div className="modal-action pt-4">
-          <BasicButton onClick={() => closeModal('upsert')} title='Close' className='bg-gray-500 text-white' />
+          <BasicButton onClick={() => closeModal('upsert')} title='Close' className={activeBtn} />
           <BasicButton onClick={createPegawai} id='btnCreate' title='Create'/>
           <BasicButton onClick={updatePegawai} id='btnUpdate' title='Update'/>
         </div>

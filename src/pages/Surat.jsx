@@ -8,7 +8,7 @@ import { BaseInput, SelectInput } from '../components/BaseInput'
 import { AlertError, AlertSuccess } from '../components/SweetAlert'
 import { getId, formatDateMounth, formatedNoSurat, printSurat, formatDateFromISO } from '../function/baseFunction'
 import { FooterTtd, BiodataWarga, HeadPegawai, KopSurat, BaseSurat, Paragraf, DataUsaha } from '../components/SuratComponents'
-
+import { TableHeader } from '../components/BaseTable'
 
 const Surat = () => {
   const today = new Date();
@@ -223,7 +223,7 @@ const Surat = () => {
 
   const getAllPegawai = async () => {
     try {
-      const response = await GetPegawai('active')
+      const response = await GetPegawai('', '', 'active')
       setPegawaiList(response.data)
     } catch (error) {
       AlertError()
@@ -301,11 +301,7 @@ const Surat = () => {
 
         <div className="card has-table">
           <div className="card-content text-black">
-            <header className="card-header">
-              <p className="card-header-title">
-                <span className="icon"><i className="fa-regular fa-file-lines"></i></span>
-                {/* daftar */}
-              </p>
+            <TableHeader title='daftar surat'>
               <div className='flex items-center mr-2'>Filter Nama Surat:</div>
               <SelectInput value={suratName} name='nama surat' label=' ' onChange={handleInput}
                 onClick={() => suratName === 'all' ? getAllData() : getAllData(suratName) }
@@ -317,10 +313,7 @@ const Surat = () => {
                 <option value="surat keterangan belum bekerja">surat keterangan belum bekerja</option>
                 <option value="surat keterangan belum menikah">surat keterangan belum menikah</option>
               </SelectInput>
-              <a className="card-header-icon cursor-pointer" onClick={() => window.location.reload()}>
-                <span className="icon text-black"><i className="fa-solid fa-rotate-right"></i></span>
-              </a>
-            </header>
+            </TableHeader>
             <table className='text-slate-800'>
               <thead>
                 <tr>
