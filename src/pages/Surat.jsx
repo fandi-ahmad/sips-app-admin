@@ -1,14 +1,14 @@
 import React, {useState, useEffect} from 'react'
 import Layout from '../layouts/Layout'
 import { BasicButton } from '../components/BaseButton'
-import { GetSuratByType, CreateSuratByType, GetWarga, UpdateSuratByType } from '../api/suratApi'   //api
+import { GetSuratByType, CreateSuratByType, GetWarga, UpdateSuratByType, GetAllSurat, GetWargaById } from '../api/suratApi'   //api
 import { GetPegawai } from '../api/pegawaiApi'     // api
 import { BaseModal, openModal, closeModal, ModalLoading } from '../components/BaseModal'
 import { BaseInput, SelectInput } from '../components/BaseInput'
 import { AlertError, AlertSuccess } from '../components/SweetAlert'
 import { getId, formatDateMounth, formatedNoSurat, printSurat, formatDateFromISO } from '../function/baseFunction'
 import { FooterTtd, BiodataWarga, HeadPegawai, KopSurat, BaseSurat, Paragraf, DataUsaha } from '../components/SuratComponents'
-import { TableHeader } from '../components/BaseTable'
+import { TableHeader, TablePaginate } from '../components/BaseTable'
 
 const Surat = () => {
   const today = new Date();
@@ -54,10 +54,15 @@ const Surat = () => {
 
   const [actText, setActText] = useState('')
 
+  const [page, setPage] = useState(1)
+  const [totalPage, setTotalPage] = useState(1)
+  const [limit, setLimit] = useState(10)
+
   const getAllData = async (namaSurat = '') => {
     try {
-      const response = await GetSuratByType(namaSurat, '', '', '', '')
+      const response = await GetAllSurat(page, limit, namaSurat)
       setSuratList(response.data)
+      setTotalPage(response.total_page)
     } catch (error) {
       console.log(error, '<-- error get surat');
     }
@@ -186,7 +191,17 @@ const Surat = () => {
     getId('btnCreate').classList.add('hidden')
     getId('btnUpdate').classList.remove('hidden')
     openModal('upsert')
-    setDataSurat(surat)
+    getDetailSurat(surat.nama_surat, surat.id)
+  }
+
+  const getDetailSurat = async (name, id) => {
+    try {
+      const response = await GetSuratByType(name, id, '', '', '')
+      console.log(response.data, '<-- detail surat');
+      setDataSurat(response.data[0])
+    } catch (error) {
+      console.log(error, '<-- error detail surat');
+    }
   }
 
   const updateSurat = async () => {
@@ -253,7 +268,7 @@ const Surat = () => {
       hideShowDesc('descSKRumah')
     }
     openModal('suratPreview')
-    setDataSurat(surat)
+    getDetailSurat(surat.nama_surat, surat.id)
   }
 
   const inputSearchSize = () => {
@@ -284,12 +299,30 @@ const Surat = () => {
     }
   }
 
+
+  const activeBtn = 'button py-1 text-white bg-gray-500 border-gray-500 border-1 hover:bg-gray-600 flex items-center'
+  const disableBtn = 'button py-1 text-white flex items-center border-0 bg-gray-400'
+  const [prevClass, setPrevClass] = useState(activeBtn)
+  const [nextClass, setNextClass] = useState(activeBtn)
+  const [disabledPrev, setDisabledPrev] = useState(false)
+  const [disabledNext, setDisabledNext] = useState(false)
+  const [btnPaginateClass, setBtnPaginateClass] = useState('')
+
+  const checkPaginateBtn = () => {
+    page == 1 ? setPrevClass(disableBtn) : setPrevClass(activeBtn)
+    page == 1 ? setDisabledPrev(true) : setDisabledPrev(false)
+    totalPage == page ? setNextClass(disableBtn) : setNextClass(activeBtn)
+    totalPage == page ? setDisabledNext(true) : setDisabledNext(false)
+    totalPage == 1 ? setBtnPaginateClass('hidden') : setBtnPaginateClass('')
+  }
+
   useEffect(() => {
     getAllData()
     getAllPegawai()
     inputSearchSize()
     getAllWarga()
-  }, [])
+    checkPaginateBtn()
+  }, [page, totalPage])
 
   return (
     <>
@@ -320,7 +353,6 @@ const Surat = () => {
                   <th></th>
                   <th>Nama Surat</th>
                   <th>No Surat</th>
-                  <th>Nama Warga</th>
                   <th>Created</th>
                 </tr>
               </thead>
@@ -330,7 +362,6 @@ const Surat = () => {
                    <td className="image-cell">{index+1}</td>
                     <td data-label="Nama Surat"><small>{surat.nama_surat}</small></td>
                     <td data-label="No Surat"><small>{surat.no_surat}</small></td>
-                    <td data-label="Nama Warga">{surat.warga.nama}</td>
                     <td data-label="Created">{formatDateFromISO(surat.createdAt)}</td>
                     <td className="actions-cell">
                       <div className="buttons right nowrap">
@@ -347,6 +378,19 @@ const Surat = () => {
                 ))}
               </tbody>
             </table>
+            <TablePaginate>
+              <small>Page {page} of {totalPage}</small>
+              <div className={`buttons ${btnPaginateClass}`}>
+                <button type="button" onClick={() => setPage(page - 1)} className={prevClass} disabled={disabledPrev}>
+                  <i className="fa-solid fa-angle-left pr-1"></i>
+                  <span className='pb-1'>previous</span>
+                </button>
+                <button type="button" onClick={() => setPage(page + 1)} className={nextClass} disabled={disabledNext}>
+                  <span className='pb-1'>next</span>
+                  <i className="fa-solid fa-angle-right pl-1"></i>
+                </button>
+              </div>
+            </TablePaginate>
           </div>
         </div>
       </Layout>
