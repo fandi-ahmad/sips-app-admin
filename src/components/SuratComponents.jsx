@@ -73,7 +73,7 @@ export const BiodataWarga = (props) => {
   return (
     <div className="my-table mb-2">
       <div className="text-left">Dengan ini menerangkan bahwa:</div>
-      <FormTitle title='Nama' data={props.nama} />
+      <FormTitle title='Nama' data={props.nama} className='uppercase' />
       <FormTitle title='NIK' data={props.nik} />
       <FormTitle title='Jenis Kelamis' data={props.jk === 'l' ? 'laki-laki' : 'perempuan'} />
       <FormTitle title='Tempat/Tanggal Lahir' data={props.ttl} />
