@@ -49,6 +49,19 @@ export const formatedNoSurat = (inputString) => {
   return inputString.replace(regex, '- '); // Mengganti tiga digit angka dengan tanda "-"
 }
 
+export const formatedNoSuratDesc = (value1, value2) => {
+  // Mengganti karakter '/' menjadi '-' pada value2
+  const formattedValue2 = value2.replace(/\//g, '.');
+
+  // Mengambil bagian value1 setelah karakter kedua '/'
+  const remainingValue1 = value1.substring(value1.indexOf('/', value1.indexOf('/') + 1));
+
+  // Menggabungkan hasil akhir dengan format yang diinginkan
+  const result = `- ${formattedValue2}${remainingValue1}`;
+
+  return result;
+}
+
 export const printSurat = (elementId) => {
   const printPage = getId(elementId).innerHTML;
   const printContent = document.createElement('div');

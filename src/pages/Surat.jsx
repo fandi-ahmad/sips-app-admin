@@ -6,7 +6,7 @@ import { GetPegawai } from '../api/pegawaiApi'     // api
 import { BaseModal, openModal, closeModal, ModalLoading } from '../components/BaseModal'
 import { BaseInput, SelectInput } from '../components/BaseInput'
 import { AlertError, AlertSuccess } from '../components/SweetAlert'
-import { getId, formatDateMounth, formatedNoSurat, printSurat, formatDateFromISO } from '../function/baseFunction'
+import { getId, formatDateMounth, formatedNoSurat, formatedNoSuratDesc, printSurat, formatDateFromISO } from '../function/baseFunction'
 import { FooterTtd, BiodataWarga, HeadPegawai, KopSurat, BaseSurat, Paragraf, DataUsaha } from '../components/SuratComponents'
 import { TableHeader, TablePaginate } from '../components/BaseTable'
 
@@ -258,6 +258,7 @@ const Surat = () => {
     getId('descSKBaik').classList.add('hidden')
     getId('descSKRumah').classList.add('hidden')
     getId('descSKKerja').classList.add('hidden')
+    getId('descSKBNikah').classList.add('hidden')
     getId(id).classList.remove('hidden')
   }
 
@@ -270,6 +271,8 @@ const Surat = () => {
       hideShowDesc('descSKRumah')
     } else if (nameCek === 'surat keterangan belum bekerja') {
       hideShowDesc('descSKKerja')
+    } else if (nameCek === 'surat keterangan belum menikah') {
+      hideShowDesc('descSKBNikah')
     }
     openModal('suratPreview')
     getDetailSurat(surat.nama_surat, surat.id)
@@ -476,19 +479,26 @@ const Surat = () => {
             Sepanjang pengamatan kami serta pengetahuan kami, hingga saat ini dikeluarkan surat 
             keterangan ini, Oknum tersebut belum pernah tersangkut dalam perkara pidana kriminal, 
             serta berkelakuan baik terhadap masyarakat sesuai dengan Surat Pengantar RT/RW 
-            Nomor: {formatedNoSurat(noSurat)}, tanggal {formatDateFromISO(suratCreatedAt)}.
+            Nomor: {formatedNoSuratDesc(noSurat, rtrw)}, tanggal {formatDateFromISO(suratCreatedAt)}.
+           
           </Paragraf>
 
           <Paragraf id='descSKRumah'>
             Bahwa nama tersebut di atas adalah Warga/Penduduk Kelurahan Balaroa Kecamatan Palu Barat 
             dan benar yang bersangkutan belum memiliki rumah, sesuai dengan Surat Pengantar 
-            Nomor: {formatedNoSurat(noSurat)}, tanggal {formatDateFromISO(suratCreatedAt)}.
+            Nomor: {formatedNoSuratDesc(noSurat, rtrw)}, tanggal {formatDateFromISO(suratCreatedAt)}.
           </Paragraf>
 
           <Paragraf id='descSKKerja'>
             Bahwa benar nama tersebut di atas adalah Warga/Penduduk Kelurahan Balaroa Kecamatan 
             Palu Barat dan sepanjang pengetahuan kami belum bekerja, sesuai dengan Surat Pengantar 
-            RT. Nomor: {formatedNoSurat(noSurat)}, tanggal {formatDateFromISO(suratCreatedAt)}.
+            RT. Nomor: {formatedNoSuratDesc(noSurat, rtrw)}, tanggal {formatDateFromISO(suratCreatedAt)}.
+          </Paragraf>
+
+          <Paragraf id='descSKBNikah'>
+            Bahwa benar nama tersebut di atas adalah Warga/Penduduk Kelurahan Balaroa Kecamatan 
+            Palu Barat dan sepanjang pengetahuan kami belum pernah menikah, sesuai dengan Surat 
+            Pengantar RT. Nomor: {formatedNoSuratDesc(noSurat, rtrw)}, tanggal {formatDateFromISO(suratCreatedAt)}.
           </Paragraf>
 
           <Paragraf>Demikian Surat Keterangan ini dibuat untuk dipergunakan seperlunya.</Paragraf>
