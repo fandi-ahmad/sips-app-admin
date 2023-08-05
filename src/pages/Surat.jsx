@@ -1,13 +1,13 @@
 import React, {useState, useEffect} from 'react'
 import Layout from '../layouts/Layout'
 import { BasicButton } from '../components/BaseButton'
-import { GetSuratByType, CreateSuratByType, GetWarga, UpdateSuratByType, GetAllSurat, GetWargaById } from '../api/suratApi'   //api
+import { GetSuratByType, CreateSuratByType, GetWarga, UpdateSuratByType, GetAllSurat, GetWargaById, CreateSuratKetUsaha, GetSuratKetUsaha, UpdateSuratKetUsaha } from '../api/suratApi'   //api
 import { GetPegawai } from '../api/pegawaiApi'     // api
 import { BaseModal, openModal, closeModal, ModalLoading } from '../components/BaseModal'
 import { BaseInput, SelectInput } from '../components/BaseInput'
 import { AlertError, AlertSuccess } from '../components/SweetAlert'
 import { getId, formatDateMounth, formatedNoSurat, formatedNoSuratDesc, printSurat, formatDateFromISO } from '../function/baseFunction'
-import { FooterTtd, BiodataWarga, HeadPegawai, KopSurat, BaseSurat, Paragraf, DataUsaha } from '../components/SuratComponents'
+import { FooterTtd, BiodataWarga, HeadPegawai, KopSurat, BaseSurat, Paragraf, UsahaWarga } from '../components/SuratComponents'
 import { TableHeader, TablePaginate } from '../components/BaseTable'
 
 const Surat = () => {
@@ -58,11 +58,24 @@ const Surat = () => {
   const [totalPage, setTotalPage] = useState(1)
   const [limit, setLimit] = useState(10)
 
+  // data usaha
+  const [namaUsaha, setNamaUsaha] = useState('')
+  const [jenisUsaha, setJenisUsaha] = useState('')
+  const [npwp, setNpwp] = useState('')
+  const [noIzinUsaha, setNoIzinUsaha] = useState('')
+  const [noFiskal, setNoFiskal] = useState('')
+  const [luasTempatUsaha, setLuasTempatUsaha] = useState('')
+  const [alamatUsaha, setAlamatUsaha] = useState('')
+  const [tahunBerdiri, setTahunBerdiri] = useState('')
+  const [bertempat, setBertempat] = useState('')
+
   const getAllData = async (namaSurat = '') => {
     try {
-      const response = await GetAllSurat(page, limit, namaSurat)
+      // const response = await GetAllSurat(page, limit, namaSurat)
+      // name, id, id_warga, no_surat, id_pegawai
+      const response = await GetSuratByType(namaSurat, '', '', '', '')
       setSuratList(response.data)
-      setTotalPage(response.total_page)
+      // setTotalPage(response.total_page)
     } catch (error) {
       console.log(error, '<-- error get surat');
     }
@@ -86,11 +99,14 @@ const Surat = () => {
       openModal('upsert')
     }
 
+    const removeAdd = (action) => getId('formDataUsaha').classList[action]('hidden')
+    suratName === 'surat keterangan usaha' ? removeAdd('remove') : removeAdd('add')
+
     suratName === 'surat keterangan berkelakuan baik' ? setSuratKey(301) : null
     suratName === 'surat keterangan usaha' || suratName === 'surat keterangan domisili usaha' ? setSuratKey(517) : null
     suratName === 'surat keterangan belum memiliki rumah' ? setSuratKey(460) : null
     suratName === 'surat keterangan belum bekerja' || suratName === 'surat keterangan belum menikah' ? setSuratKey(474.5) : null
-    
+    suratName === 'surat keterangan usaha' ? setSuratKey(517) : null
   }
 
   const previousCreateSuratName = () => {
@@ -118,6 +134,14 @@ const Surat = () => {
       case 'no surat number': setNoSuratNumber(value); setNoSurat(`${suratKey}/${value}/BLR/${monthRomawi}/${year}`); break;
       case 'maksud': setMaksud(value); break;
       case 'pegawai': setIdPegawai(parseInt(value)); break;
+      case 'nama usaha': setNamaUsaha(value); break;
+      case 'jenis usaha': setJenisUsaha(value); break;
+      case 'npwp': setNpwp(value); break;
+      case 'no izin usaha': setNoIzinUsaha(value); break;
+      case 'no fiskal': setNoFiskal(value); break;
+      case 'luas tempat usaha': setLuasTempatUsaha(value); break;
+      case 'alamat usaha': setAlamatUsaha(value); break;
+      case 'tahun berdiri': setTahunBerdiri(value); break;
       default: break;
     }
   };
@@ -137,13 +161,26 @@ const Surat = () => {
         } else {
           closeModal('upsert')
           openModal('modal-loading')
+
+          if (suratName === 'surat keterangan usaha') {
+            await CreateSuratKetUsaha({
+              nama_surat: suratName, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
+              tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
+              status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
+              no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai,
+              nama_usaha: namaUsaha, jenis_usaha: jenisUsaha, npwp: npwp, no_izin_usaha: noIzinUsaha,
+              no_fiskal: noFiskal, luas_tempat_usaha: luasTempatUsaha, alamat_usaha: alamatUsaha,
+              tahun_berdiri: tahunBerdiri, bertempat: bertempat
+            })
+          } else {
+            await CreateSuratByType({
+              nama_surat: suratName, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
+              tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
+              status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
+              no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai
+            })
+          }
     
-          await CreateSuratByType({
-            nama_surat: suratName, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
-            tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
-            status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
-            no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai
-          })
     
           closeModal('modal-loading')
           AlertSuccess('surat berhasil dibuat')
@@ -157,6 +194,17 @@ const Surat = () => {
 
   const setDataSurat = (surat) => {
     const warga = surat.warga
+    if (surat.ket_usaha) {
+      const usaha = surat.ket_usaha
+      setNamaUsaha(usaha.nama_usaha)
+      setJenisUsaha(usaha.jenis_usaha)
+      setNpwp(usaha.npwp)
+      setNoIzinUsaha(usaha.no_izin_usaha)
+      setNoFiskal(usaha.no_fiskal)
+      setLuasTempatUsaha(usaha.luas_tempat_usaha)
+      setAlamatUsaha(usaha.alamat_usaha)
+      setTahunBerdiri(usaha.tahun_berdiri)
+    }
     setNamaPegawai(surat.pegawai.nama)
     setJabatanPegawai(surat.pegawai.jabatan)
     setNipPegawai(surat.pegawai.nip)
@@ -184,23 +232,56 @@ const Surat = () => {
     setNama(''); setTempatLahir(''); setTglLahir(''); setJk(''); setPekerjaan('')
     setNegara('indonesia'); setStatus(''); setAgama(''); setAlamat(''); setRtrw('')
     setNoSurat(''); setNoSuratNumber(''); setMaksud(''); setIdPegawai(''); setNik(''); setSuratName('')
+
+    setNamaUsaha(''); setJenisUsaha(''); setNpwp(''); setNoIzinUsaha(''); setNoFiskal('')
+    setLuasTempatUsaha(''); setAlamatUsaha(''); setTahunBerdiri(''); setBertempat('')
   }
 
-  const editSurat = (surat) => {
+  const hideShowDesc = (id) => {
+    getId('descSKBaik').classList.add('hidden')
+    getId('descSKRumah').classList.add('hidden')
+    getId('descSKKerja').classList.add('hidden')
+    getId('descSKBNikah').classList.add('hidden')
+    getId('dataUsahaWarga').classList.add('hidden')
+    getId(id).classList.remove('hidden')
+  }
+
+  const printSuratBySelected = async (surat) => {
+    const nameCek = surat.nama_surat
+    getId('maksudWarga').classList.remove('hidden')
+    if (nameCek === 'surat keterangan berkelakuan baik') {
+      hideShowDesc('descSKBaik')
+    } else if (nameCek === 'surat keterangan belum memiliki rumah') {
+      hideShowDesc('descSKRumah')
+    } else if (nameCek === 'surat keterangan belum bekerja') {
+      hideShowDesc('descSKKerja')
+    } else if (nameCek === 'surat keterangan belum menikah') {
+      hideShowDesc('descSKBNikah')
+    } else if (nameCek === 'surat keterangan usaha') {
+      hideShowDesc('dataUsahaWarga')
+      getId('maksudWarga').classList.add('hidden')
+    }
+    openModal('suratPreview')
+    if (surat.id_surat_khusus) {
+      const sUsaha = await GetSuratKetUsaha(surat.id)
+      setDataSurat(sUsaha.data[0])
+    } else {
+      setDataSurat(surat)
+    }
+  }
+
+  const editSurat = async (surat) => {
+    const usahaShow = (method) => getId('formDataUsaha').classList[method]('hidden')
+    surat.nama_surat === 'surat keterangan usaha' ? usahaShow('remove') : usahaShow('add')
     setActText('update')
     getId('btnCreate').classList.add('hidden')
     getId('btnUpdate').classList.remove('hidden')
     openModal('upsert')
-    getDetailSurat(surat.nama_surat, surat.id)
-  }
-
-  const getDetailSurat = async (name, id) => {
-    try {
-      const response = await GetSuratByType(name, id, '', '', '')
-      console.log(response.data, '<-- detail surat');
-      setDataSurat(response.data[0])
-    } catch (error) {
-      console.log(error, '<-- error detail surat');
+    if (surat.id_surat_khusus) {
+      const sUsaha = await GetSuratKetUsaha(surat.id)
+      setDataSurat(sUsaha.data[0])
+    } else {
+      setDataSurat(surat)
     }
   }
 
@@ -209,13 +290,23 @@ const Surat = () => {
       closeModal('upsert')
       openModal('modal-loading')
 
-      const res = await UpdateSuratByType({
-        // nama_surat: 'surat keterangan berkelakuan baik',
-        id: idSurat, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
-        tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
-        status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
-        no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai
-      })
+      if (suratName == 'surat keterangan usaha') {
+        await UpdateSuratKetUsaha({
+          id_surat: idSurat, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
+          tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
+          status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
+          no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai,
+          nama_usaha: namaUsaha, jenis_usaha: jenisUsaha, npwp: npwp, no_izin_usaha: noIzinUsaha, no_fiskal: noFiskal,
+          luas_tempat_usaha: luasTempatUsaha, alamat_usaha: alamatUsaha, tahun_berdiri: tahunBerdiri
+        })
+      } else {
+        await UpdateSuratByType({
+          id: idSurat, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
+          tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
+          status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
+          no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai
+        })
+      }
 
       closeModal('modal-loading')
       AlertSuccess('surat berhasil diperbarui')
@@ -252,30 +343,6 @@ const Surat = () => {
     } catch (error) {
       console.log(error);
     }
-  }
-
-  const hideShowDesc = (id) => {
-    getId('descSKBaik').classList.add('hidden')
-    getId('descSKRumah').classList.add('hidden')
-    getId('descSKKerja').classList.add('hidden')
-    getId('descSKBNikah').classList.add('hidden')
-    getId(id).classList.remove('hidden')
-  }
-
-  const printSuratBySelected = (surat) => {
-    const nameCek = surat.nama_surat
-    console.log(nameCek);
-    if (nameCek === 'surat keterangan berkelakuan baik') {
-      hideShowDesc('descSKBaik')
-    } else if (nameCek === 'surat keterangan belum memiliki rumah') {
-      hideShowDesc('descSKRumah')
-    } else if (nameCek === 'surat keterangan belum bekerja') {
-      hideShowDesc('descSKKerja')
-    } else if (nameCek === 'surat keterangan belum menikah') {
-      hideShowDesc('descSKBNikah')
-    }
-    openModal('suratPreview')
-    getDetailSurat(surat.nama_surat, surat.id)
   }
 
   const inputSearchSize = () => {
@@ -323,6 +390,8 @@ const Surat = () => {
     totalPage == 1 ? setBtnPaginateClass('hidden') : setBtnPaginateClass('')
   }
 
+  const descOpt = 'Demikian Keterangan ini dibuat dan berlaku selama 1 (Satu) bulan sejak dikeluarkan, apabila dikemudian hari terdapat kesalahan data, maka akan diadakan perbaikan sebagaimana mestinya.'
+
   useEffect(() => {
     getAllData()
     getAllPegawai()
@@ -349,7 +418,8 @@ const Surat = () => {
                 <option value="all">select All</option>
                 <option value="surat keterangan berkelakuan baik">surat keterangan berkelakuan baik</option>
                 <option value="surat keterangan belum memiliki rumah">surat keterangan belum memiliki rumah</option>
-                <option value="surat keterangan tidak mampu">surat keterangan tidak mampu</option>
+                {/* <option value="surat keterangan tidak mampu">surat keterangan tidak mampu</option> */}
+                <option value="surat keterangan usaha">surat keterangan usaha</option>
                 <option value="surat keterangan belum bekerja">surat keterangan belum bekerja</option>
                 <option value="surat keterangan belum menikah">surat keterangan belum menikah</option>
               </SelectInput>
@@ -360,6 +430,7 @@ const Surat = () => {
                   <th></th>
                   <th>Nama Surat</th>
                   <th>No Surat</th>
+                  <th>Nama Warga</th>
                   <th>Created</th>
                 </tr>
               </thead>
@@ -369,6 +440,7 @@ const Surat = () => {
                    <td className="image-cell">{index+1}</td>
                     <td data-label="Nama Surat"><small>{surat.nama_surat}</small></td>
                     <td data-label="No Surat"><small>{surat.no_surat}</small></td>
+                    <td data-label="Nama Warga">{surat.warga.nama}</td>
                     <td data-label="Created">{formatDateFromISO(surat.createdAt)}</td>
                     <td className="actions-cell">
                       <div className="buttons right nowrap">
@@ -407,9 +479,9 @@ const Surat = () => {
         <SelectInput value={suratName} name='nama surat' onChange={handleInput} >
           <option value="surat keterangan berkelakuan baik">surat keterangan berkelakuan baik</option>
           <option value="surat keterangan belum memiliki rumah">surat keterangan belum memiliki rumah</option>
-          <option value="surat keterangan tidak mampu">surat keterangan tidak mampu</option>
           <option value="surat keterangan belum bekerja">surat keterangan belum bekerja</option>
           <option value="surat keterangan belum menikah">surat keterangan belum menikah</option>
+          <option value="surat keterangan usaha">surat keterangan usaha</option>
         </SelectInput>
         <div className="modal-action pt-4">
           <BasicButton onClick={() => closeModal('createSuratName')} title='Close' className='bg-gray-500 text-white' />
@@ -418,7 +490,7 @@ const Surat = () => {
       </BaseModal>
 
       {/* ===== upsert modal ===== */}
-      <BaseModal onClick={() => getId('selectOpt').classList.add('hidden')} id='upsert' title={`${actText} surat`} classSize='w-screen'>
+      <BaseModal onClick={() => getId('selectOpt').classList.add('hidden')} id='upsert' title={`${actText} ${suratName}`} classSize='w-screen'>
         <div className='grid grid-cols-4 gap-4'>
           <BaseInput autoComplete='off' id='nik' value={nik} onChange={handleInput} onKeyUp={checkNikWarga} name='NIK' label={<>NIK <span className="mdi mdi-circle text-red-500 hidden" id='nikIcon'></span></>} />
           <div className='mt-16 border border-gray-800' style={{ position: 'absolute' }}>
@@ -450,6 +522,20 @@ const Surat = () => {
             ))}
           </SelectInput>
         </div>
+        <div className='mt-8 hidden' id='formDataUsaha'>
+          <div className='text-xl mb-2 font-bold'>Data Usaha</div>
+          <div className='grid grid-cols-4 gap-4'>
+            <BaseInput value={namaUsaha} onChange={handleInput} name='nama usaha' />
+            <BaseInput value={jenisUsaha} onChange={handleInput} name='jenis usaha' />
+            <BaseInput value={npwp} onChange={handleInput} name='npwp' />
+            <BaseInput value={noIzinUsaha} onChange={handleInput} name='no izin usaha' />
+            <BaseInput value={noFiskal} onChange={handleInput} name='no fiskal' />
+            <BaseInput value={luasTempatUsaha} onChange={handleInput} name='luas tempat usaha' />
+            <BaseInput value={alamatUsaha} onChange={handleInput} name='alamat usaha' />
+            <BaseInput value={tahunBerdiri} onChange={handleInput} name='tahun berdiri' />
+          </div>
+
+        </div>
         <div className="modal-action pt-4">
           <div id='btnCreate'>
             <BasicButton onClick={previousCreateSuratName} title='Previous' className='bg-gray-500 text-white mr-2' />
@@ -473,7 +559,10 @@ const Surat = () => {
             negara={negara} status={status} agama={agama} alamat={alamat} rtrw={rtrw} maksud={maksud}
           />
 
-          {/* <DataUsaha/> */}
+          <UsahaWarga id='dataUsahaWarga'
+            nama={namaUsaha} jenis={jenisUsaha} npwp={npwp} noIzinUsaha={noIzinUsaha} noFiskal={noFiskal} 
+            luas={luasTempatUsaha} alamat={alamatUsaha} tahun={tahunBerdiri} maksud={maksud}
+          />
 
           <Paragraf id='descSKBaik'>
             Sepanjang pengamatan kami serta pengetahuan kami, hingga saat ini dikeluarkan surat 
@@ -489,17 +578,24 @@ const Surat = () => {
             Nomor: {formatedNoSuratDesc(noSurat, rtrw)}, tanggal {formatDateFromISO(suratCreatedAt)}.
           </Paragraf>
 
-          <Paragraf id='descSKKerja'>
-            Bahwa benar nama tersebut di atas adalah Warga/Penduduk Kelurahan Balaroa Kecamatan 
-            Palu Barat dan sepanjang pengetahuan kami belum bekerja, sesuai dengan Surat Pengantar 
-            RT. Nomor: {formatedNoSuratDesc(noSurat, rtrw)}, tanggal {formatDateFromISO(suratCreatedAt)}.
-          </Paragraf>
+          <div id='descSKKerja'>
+            <Paragraf>
+              Bahwa benar nama tersebut di atas adalah Warga/Penduduk Kelurahan Balaroa Kecamatan 
+              Palu Barat dan sepanjang pengetahuan kami belum bekerja, sesuai dengan Surat Pengantar 
+              RT. Nomor: {formatedNoSuratDesc(noSurat, rtrw)}, tanggal {formatDateFromISO(suratCreatedAt)}.
+            </Paragraf>
+            <Paragraf>{descOpt}</Paragraf>
+          </div>
 
-          <Paragraf id='descSKBNikah'>
-            Bahwa benar nama tersebut di atas adalah Warga/Penduduk Kelurahan Balaroa Kecamatan 
-            Palu Barat dan sepanjang pengetahuan kami belum pernah menikah, sesuai dengan Surat 
-            Pengantar RT. Nomor: {formatedNoSuratDesc(noSurat, rtrw)}, tanggal {formatDateFromISO(suratCreatedAt)}.
-          </Paragraf>
+          <div id='descSKBNikah'>
+            <Paragraf>
+              Bahwa benar nama tersebut di atas adalah Warga/Penduduk Kelurahan Balaroa Kecamatan 
+              Palu Barat dan sepanjang pengetahuan kami belum pernah menikah, sesuai dengan Surat 
+              Pengantar RT. Nomor: {formatedNoSuratDesc(noSurat, rtrw)}, tanggal {formatDateFromISO(suratCreatedAt)}.
+            </Paragraf>
+
+            <Paragraf>{descOpt}</Paragraf>
+          </div>
 
           <Paragraf>Demikian Surat Keterangan ini dibuat untuk dipergunakan seperlunya.</Paragraf>
           <FooterTtd date={formatDateFromISO(suratCreatedAt)} nama={namaPegawai} jabatan={jabatanPegawai} nip={nipPegawai} />

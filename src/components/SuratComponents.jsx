@@ -15,7 +15,7 @@ export const BaseSurat = (props) => {
 
 export const Paragraf = (props) => {
   return (
-    <p id={props.id} className={`text-justify mt-2 ${props.className}`}>{props.children}</p>
+    <p id={props.id} className={`text-justify mt-2 indent-10 ${props.className}`}>{props.children}</p>
   )
 }
 
@@ -88,22 +88,19 @@ export const BiodataWarga = (props) => {
   )
 }
 
-export const DataUsaha = (props) => {
+export const UsahaWarga = (props) => {
   return (
-    <div className="my-table mb-2">
+    <div className="my-table mb-2" id={props.id}>
       <div className="text-left">Benar yang bersangkutan diatas mempunyai Usaha yaitu:</div>
-      <div className="flex flex-row">
-        <div className="w-60 ml-10 text-left">Nama Usaha</div> : -
-      </div>
-      <FormTitle title='Jenis Usaha' data='Jualan Kue' />
-      <FormTitle title='NPWP' data='' />
-      <FormTitle title='Nomor Izin Usaha' data='' />
-      <FormTitle title='Nomor Fiskal' data='' />
-      <FormTitle title='Luas Tempat Usaha' data='' />
-      <FormTitle title='Alamat Usaha' data='' />
-      <FormTitle title='Tahun Berdiri Usaha' data='' />
-      <FormTitle title='Maksud' data='' />
-
+      <FormTitle title='Nama Usaha' data={props.nama} className='uppercase' />
+      <FormTitle title='Jenis Usaha' data={props.jenis} />
+      <FormTitle title='NPWP' data={props.npwp} />
+      <FormTitle title='Nomor Izin Usaha' data={props.noIzinUsaha} />
+      <FormTitle title='Nomor Fiskal' data={props.noFiskal} />
+      <FormTitle title='Luas Tempat Usaha' data={props.luas} />
+      <FormTitle title='Alamat Usaha' data={props.alamat} />
+      <FormTitle title='Tahun Berdiri Usaha' data={props.tahun} />
+      <FormTitle title='Maksud' data={props.maksud} id='maksudUsahaWarga' className='italic' />
     </div>
   )
 }

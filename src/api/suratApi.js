@@ -30,4 +30,16 @@ export const CreateSuratByType = (data) => {
 export const UpdateSuratByType = (data) => {
     return callApi('put', `${apiUrl}/surat/type/update`, data);
 };
-  
+
+// usaha
+export const GetSuratKetUsaha = (id) => {
+    return callApi('get', `${apiUrl}/surat/usaha?id=${id}`)
+}
+
+export const CreateSuratKetUsaha = (data) => {
+    return callApi('post', `${apiUrl}/surat/usaha`, data)
+}
+
+export const UpdateSuratKetUsaha = (data) => {
+    return callApi('put', `${apiUrl}/surat/usaha/update`, data)
+}
