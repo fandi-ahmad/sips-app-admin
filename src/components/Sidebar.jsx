@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from "react-router-dom";
 // import { GetUser } from '../api/userApi'
 import { AlertConfirm } from './SweetAlert'
+import logoImage from '../assets/images/lambang_kota_palu.png'
 
 const Sidebar = () => {
 
@@ -74,7 +75,8 @@ const Sidebar = () => {
     return (
         <aside className="aside is-placed-left is-expanded" style={{ minHeight: '100vh', maxHeight: 'fit-content', overflowY: 'auto' }}>
             <div className='h-5/6'>
-                <div className="aside-tools">
+                <div className="aside-tools py-2 h-20">
+                    <img src={logoImage} alt="" className='w-10 mr-2' />
                     <div>
                         <b className="font-black">Kel. Balaroa</b>
                     </div>
@@ -100,7 +102,7 @@ const Sidebar = () => {
                                 <span className="menu-item-label">Semua Surat</span>
                             </a>
                         </li>
-                        <li className="" id="dropdownMenu" onClick={dropdownMenu} >
+                        {/* <li className="" id="dropdownMenu" onClick={dropdownMenu} >
                             <a className="dropdown">
                                 <span className="icon"><i className="fa-solid fa-box-archive"></i></span>
                                 <span className="menu-item-label">Surat</span>
@@ -133,7 +135,7 @@ const Sidebar = () => {
                                     </a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> */}
                     </ul>
                 </div>
             </div>

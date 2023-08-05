@@ -86,7 +86,7 @@ export const Pegawai = () => {
   const confirmDeletePegawai = async (id) => {
     openModal('modal-loading')
     try {
-      const suratByIdPegawai = await GetSuratByType('', '', '', '', id)
+      const suratByIdPegawai = await GetSuratByType('', '', '', '', id, '')
       if (suratByIdPegawai.status === 'failed') {
         const res = await DeletePegawai(id)
         AlertSuccess('Delete Successfully')
