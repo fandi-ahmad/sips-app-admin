@@ -2,7 +2,7 @@ import React from 'react'
 
 export const TableHeader = (props) => {
   return (
-    <header className="card-header">
+    <header className="card-header py-2">
       <p className="card-header-title capitalize">
         <span className="icon"><i className={`fa-regular ${props.icon || 'fa-file-lines'}`}></i></span>
         {props.title}

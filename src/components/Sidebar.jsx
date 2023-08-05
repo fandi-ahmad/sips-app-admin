@@ -141,7 +141,7 @@ const Sidebar = () => {
                 <ul onClick={logoutUser} className="bg-slate-700 hover:bg-slate-600 cursor-pointer p-2 rounded-md w-full mx-2 text-center">
                     <li className="--set-active-profile-htm">
                         <a className='text-white'>
-                            <span className="icon"><i className="mdi mdi-logout"></i></span>
+                            <span className="icon"><i className="fa-solid fa-right-from-bracket"></i></span>
                             <span className="menu-item-label">Logout</span>
                         </a>
                     </li>

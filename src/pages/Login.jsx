@@ -68,14 +68,14 @@ const Login = () => {
           <header className="card-header">
             <p className="card-header-title flex justify-center">
               <span>
-                <span className="icon"><i className="mdi mdi-lock"></i></span>
+                <span className="icon"><i className="fa-solid fa-user"></i></span>
                 Login
               </span>
             </p>
           </header>
           <div className="card-content">
             <div className="field spaced">
-              <InputIcon name='username' onChange={handleInput} classLabel='font-bold' placeholder='username' icon={<i className="mdi mdi-account"></i>} />
+              <InputIcon name='username' onChange={handleInput} classLabel='font-bold' placeholder='username' icon={<i className="fa-solid fa-user"></i>} />
               <p className="help">Please enter your username</p>
             </div>
 

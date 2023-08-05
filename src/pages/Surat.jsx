@@ -4,7 +4,7 @@ import { BasicButton } from '../components/BaseButton'
 import { GetSuratByType, CreateSuratByType, GetWarga, UpdateSuratByType, GetAllSurat, GetWargaById, CreateSuratKetUsaha, GetSuratKetUsaha, UpdateSuratKetUsaha } from '../api/suratApi'   //api
 import { GetPegawai } from '../api/pegawaiApi'     // api
 import { BaseModal, openModal, closeModal, ModalLoading } from '../components/BaseModal'
-import { BaseInput, SelectInput } from '../components/BaseInput'
+import { BaseInput, InputIcon, SearchInput, SelectInput } from '../components/BaseInput'
 import { AlertError, AlertSuccess } from '../components/SweetAlert'
 import { getId, formatDateMounth, formatedNoSurat, formatedNoSuratDesc, printSurat, formatDateFromISO } from '../function/baseFunction'
 import { FooterTtd, BiodataWarga, HeadPegawai, KopSurat, BaseSurat, Paragraf, UsahaWarga } from '../components/SuratComponents'
@@ -57,6 +57,7 @@ const Surat = () => {
   const [page, setPage] = useState(1)
   const [totalPage, setTotalPage] = useState(1)
   const [limit, setLimit] = useState(10)
+  const [search, setSearch] = useState('')
 
   // data usaha
   const [namaUsaha, setNamaUsaha] = useState('')
@@ -69,11 +70,11 @@ const Surat = () => {
   const [tahunBerdiri, setTahunBerdiri] = useState('')
   const [bertempat, setBertempat] = useState('')
 
-  const getAllData = async (namaSurat = '') => {
+  const getAllData = async (namaSurat = '', search = '') => {
     try {
       // const response = await GetAllSurat(page, limit, namaSurat)
-      // name, id, id_warga, no_surat, id_pegawai
-      const response = await GetSuratByType(namaSurat, '', '', '', '')
+      // name, id, id_warga, no_surat, id_pegawai, search
+      const response = await GetSuratByType(namaSurat, '', '', '', '', search)
       setSuratList(response.data)
       // setTotalPage(response.total_page)
     } catch (error) {
@@ -142,6 +143,7 @@ const Surat = () => {
       case 'luas tempat usaha': setLuasTempatUsaha(value); break;
       case 'alamat usaha': setAlamatUsaha(value); break;
       case 'tahun berdiri': setTahunBerdiri(value); break;
+      case 'search': setSearch(value); break;
       default: break;
     }
   };
@@ -155,7 +157,7 @@ const Surat = () => {
       ) {
         AlertError('input tidak boleh kosaong')
       } else {
-        const checkNoSurat = await GetSuratByType('', '', '', noSurat, '')
+        const checkNoSurat = await GetSuratByType('', '', '', noSurat, '', '')
         if (checkNoSurat.status !== 404) {
           AlertError('nomor surat sudah terdaftar')
         } else {
@@ -420,6 +422,10 @@ const Surat = () => {
         <div className="card has-table">
           <div className="card-content text-black">
             <TableHeader title='daftar surat'>
+              <InputIcon value={search} onChange={handleInput} name='search' onKeyUp={() => getAllData('', search)} className='mr-4'
+                icon={<i className="fa-solid fa-magnifying-glass"></i>} type='search' classLabel='hidden' placeholder='cari surat'
+              />
+
               <div className='flex items-center mr-2'>Filter Nama Surat:</div>
               <SelectInput value={suratName} name='nama surat' label=' ' onChange={handleInput}
                 onClick={() => suratName === 'all' ? getAllData() : getAllData(suratName) }
@@ -440,6 +446,7 @@ const Surat = () => {
                   <th>Nama Surat</th>
                   <th>No Surat</th>
                   <th>Nama Warga</th>
+                  <th>Nama Pegawai</th>
                   <th>Created</th>
                 </tr>
               </thead>
@@ -450,6 +457,7 @@ const Surat = () => {
                     <td data-label="Nama Surat"><small>{surat.nama_surat}</small></td>
                     <td data-label="No Surat"><small>{surat.no_surat}</small></td>
                     <td data-label="Nama Warga">{surat.warga.nama}</td>
+                    <td data-label="Nama Pegawai">{surat.pegawai.nama}</td>
                     <td data-label="Created">{formatDateFromISO(surat.createdAt)}</td>
                     <td className="actions-cell">
                       <div className="buttons right nowrap">
