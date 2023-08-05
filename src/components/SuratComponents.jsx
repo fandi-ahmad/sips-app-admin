@@ -106,24 +106,13 @@ export const UsahaWarga = (props) => {
 }
 
 export const FooterTtd = (props) => {
-  const today = new Date();
-  const date = today.getDate();
-  const month = today.getMonth();
-  const year = today.getFullYear();
-  const monthNames = [ "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-  ];
-  const monthName = monthNames[month];
-
   return (
     <div className="flex justify-end">
       <div className="ttd">
         <div className="mb-20">
-          {/* <div className="my-4">Palu, {date} {monthName} {year} </div> */}
-          {/* <div className="my-4">Palu, {props.date} {props.month} {props.year} </div> */}
           <div className="my-4">Palu, {props.date}</div>
-          <div>An. LURAH BALAROA</div>
-          <div>{props.jabatan}</div>
+          <div id='anLurah'>An. LURAH BALAROA</div>
+          <div id='ttdJabatan' className='capitalize'>{props.jabatan}</div>
           {/* <div id="jabatanPegawaiTtd">Kasi Pemberdayaan Masyarakat</div> */}
           {/* <!-- <div>Dan Kesejahteraan Sosial</div> --> */}
         </div>

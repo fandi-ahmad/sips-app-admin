@@ -261,6 +261,15 @@ const Surat = () => {
       hideShowDesc('dataUsahaWarga')
       getId('maksudWarga').classList.add('hidden')
     }
+    if (surat.pegawai.jabatan === 'lurah balaroa') {
+      getId('anLurah').classList.add('hidden')
+      getId('ttdJabatan').classList.add('uppercase')
+      getId('ttdJabatan').classList.remove('capitalize')
+    } else {
+      getId('anLurah').classList.remove('hidden')
+      getId('ttdJabatan').classList.remove('uppercase')
+      getId('ttdJabatan').classList.add('capitalize')
+    }
     openModal('suratPreview')
     if (surat.id_surat_khusus) {
       const sUsaha = await GetSuratKetUsaha(surat.id)
