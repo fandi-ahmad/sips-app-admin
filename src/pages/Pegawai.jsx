@@ -26,6 +26,10 @@ export const Pegawai = () => {
     openModal('upsert')
     getId('btnCreate').classList.remove('hidden')
     getId('btnUpdate').classList.add('hidden')
+    setNama('')
+    setJabatan('')
+    setNip('')
+    setIsActive(true)
   }
 
   const getAllData = async () => {

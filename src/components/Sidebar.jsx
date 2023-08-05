@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from "react-router-dom";
-// import { GetUser } from '../api/userApi'
+import { GetUser } from '../api/userApi'
 import { AlertConfirm } from './SweetAlert'
 import logoImage from '../assets/images/lambang_kota_palu.png'
 
@@ -13,16 +13,16 @@ const Sidebar = () => {
         document.getElementById(id).classList.add('active')
     }
 
-    // const checkToken = async () => {
-    //     try {
-    //         const response = await GetUser()
-    //         if (response.status == 403) {
-    //             localStorage.removeItem("user");
-    //             navigate('/login')
-    //         }
-    //     } catch (error) {
-    //     }
-    // }
+    const checkToken = async () => {
+        try {
+            const response = await GetUser()
+            if (response.status == 403) {
+                localStorage.removeItem("user");
+                navigate('/login')
+            }
+        } catch (error) {
+        }
+    }
 
     const logoutUser = () => {
         AlertConfirm({
@@ -56,7 +56,7 @@ const Sidebar = () => {
     }
 
     useEffect(() => {
-        // checkToken()
+        checkToken()
         checkActiveMenu()
     }, [])
 
