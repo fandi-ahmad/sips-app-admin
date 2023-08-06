@@ -20,7 +20,7 @@ export const Pegawai = () => {
 
   const [page, setPage] = useState(1)
   const [totalPage, setTotalPage] = useState(1)
-  const [limit, setLimit] = useState(10)
+  const [limit, setLimit] = useState(1000)
 
   const createNew = () => {
     openModal('upsert')

@@ -44,3 +44,8 @@ export const CreateSuratKetUsaha = (data) => {
 export const UpdateSuratKetUsaha = (data) => {
     return callApi('put', `${apiUrl}/surat/usaha/update`, data, Auth())
 }
+
+// dashboard
+export const GetDataDashboard = () => {
+    return callApi('get', `${apiUrl}/dashboard`, Auth())
+}
