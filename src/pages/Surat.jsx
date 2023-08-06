@@ -6,7 +6,7 @@ import { GetPegawai } from '../api/pegawaiApi'     // api
 import { BaseModal, openModal, closeModal, ModalLoading } from '../components/BaseModal'
 import { BaseInput, InputIcon, SearchInput, SelectInput } from '../components/BaseInput'
 import { AlertError, AlertSuccess } from '../components/SweetAlert'
-import { getId, formatDateMounth, formatedNoSurat, formatedNoSuratDesc, printSurat, formatDateFromISO } from '../function/baseFunction'
+import { getId, formatDateMounth, formatedNoSurat, formatedNoSuratDesc, printSurat, formatDateFromISO, formatToDot } from '../function/baseFunction'
 import { FooterTtd, BiodataWarga, HeadPegawai, KopSurat, BaseSurat, Paragraf, UsahaWarga } from '../components/SuratComponents'
 import { TableHeader, TablePaginate } from '../components/BaseTable'
 
@@ -47,6 +47,7 @@ const Surat = () => {
   const [maksud, setMaksud] = useState('')
   const [suratName, setSuratName] = useState('')
   const [suratCreatedAt, setSuratCreatedAt] = useState('')
+  const [noSuratPengantar, setNoSuratPengantar] = useState('')
 
   const [namaPegawai, setNamaPegawai] = useState('')
   const [nipPegawai, setNipPegawai] = useState('')
@@ -83,6 +84,7 @@ const Surat = () => {
   }
 
   const createNew = () => {
+    getId('noSuratNumber').removeAttribute('disabled')
     const select = getId('selectOpt')
     select.click()
     setActText('create')
@@ -133,6 +135,7 @@ const Surat = () => {
       case 'alamat': setAlamat(value); break;
       case 'RT/RW': setRtrw(value); break;
       case 'no surat number': setNoSuratNumber(value); setNoSurat(`${suratKey}/${value}/BLR/${monthRomawi}/${year}`); break;
+      case 'no surat pengantar': setNoSuratPengantar(value); break;
       case 'maksud': setMaksud(value); break;
       case 'pegawai': setIdPegawai(parseInt(value)); break;
       case 'nama usaha': setNamaUsaha(value); break;
@@ -157,37 +160,37 @@ const Surat = () => {
       ) {
         AlertError('input tidak boleh kosaong')
       } else {
-        const checkNoSurat = await GetSuratByType('', '', '', noSurat, '', '')
-        if (checkNoSurat.status !== 404) {
-          AlertError('nomor surat sudah terdaftar')
-        } else {
-          closeModal('upsert')
-          openModal('modal-loading')
+        // const checkNoSurat = await GetSuratByType('', '', '', noSurat, '', '')
+        // if (checkNoSurat.status !== 404) {
+        //   AlertError('nomor surat sudah terdaftar')
+        // } else {
+        // }
+        closeModal('upsert')
+        openModal('modal-loading')
 
-          if (suratName === 'surat keterangan usaha') {
-            await CreateSuratKetUsaha({
-              nama_surat: suratName, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
-              tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
-              status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
-              no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai,
-              nama_usaha: namaUsaha, jenis_usaha: jenisUsaha, npwp: npwp, no_izin_usaha: noIzinUsaha,
-              no_fiskal: noFiskal, luas_tempat_usaha: luasTempatUsaha, alamat_usaha: alamatUsaha,
-              tahun_berdiri: tahunBerdiri, bertempat: bertempat
-            })
-          } else {
-            await CreateSuratByType({
-              nama_surat: suratName, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
-              tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
-              status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
-              no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai
-            })
-          }
-    
-    
-          closeModal('modal-loading')
-          AlertSuccess('surat berhasil dibuat')
-          getAllData()
+        if (suratName === 'surat keterangan usaha') {
+          await CreateSuratKetUsaha({
+            nama_surat: suratName, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
+            tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
+            status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
+            no_surat_number: noSuratNumber, maksud: maksud, no_surat_pengantar: noSuratPengantar, id_pegawai: idPegawai,
+            nama_usaha: namaUsaha, jenis_usaha: jenisUsaha, npwp: npwp, no_izin_usaha: noIzinUsaha,
+            no_fiskal: noFiskal, luas_tempat_usaha: luasTempatUsaha, alamat_usaha: alamatUsaha,
+            tahun_berdiri: tahunBerdiri, bertempat: bertempat
+          })
+        } else {
+          await CreateSuratByType({
+            nama_surat: suratName, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
+            tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
+            status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
+            no_surat_number: noSuratNumber, maksud: maksud, no_surat_pengantar: noSuratPengantar, id_pegawai: idPegawai
+          })
         }
+  
+  
+        closeModal('modal-loading')
+        AlertSuccess('surat berhasil dibuat')
+        getAllData()
       }
     } catch (error) {
       AlertError()
@@ -225,6 +228,7 @@ const Surat = () => {
     setIdSurat(surat.id)
     setNoSuratNumber(surat.no_surat_number)
     setNoSurat(surat.no_surat)
+    setNoSuratPengantar(surat.no_surat_pengantar || '-')
     setMaksud(surat.maksud)
     setSuratCreatedAt(surat.createdAt)
     setIdPegawai(surat.pegawai.id_pegawai)
@@ -232,7 +236,7 @@ const Surat = () => {
 
   const resetData = () => {
     setNama(''); setTempatLahir(''); setTglLahir(''); setJk(''); setPekerjaan('')
-    setNegara('indonesia'); setStatus(''); setAgama(''); setAlamat(''); setRtrw('')
+    setNegara('indonesia'); setStatus(''); setAgama(''); setAlamat(''); setRtrw(''); setNoSuratPengantar('')
     setNoSurat(''); setNoSuratNumber(''); setMaksud(''); setIdPegawai(''); setNik(''); setSuratName('')
 
     setNamaUsaha(''); setJenisUsaha(''); setNpwp(''); setNoIzinUsaha(''); setNoFiskal('')
@@ -284,6 +288,7 @@ const Surat = () => {
   const editSurat = async (surat) => {
     const usahaShow = (method) => getId('formDataUsaha').classList[method]('hidden')
     surat.nama_surat === 'surat keterangan usaha' ? usahaShow('remove') : usahaShow('add')
+    getId('noSuratNumber').setAttribute('disabled', 'on')
     setActText('update')
     getId('btnCreate').classList.add('hidden')
     getId('btnUpdate').classList.remove('hidden')
@@ -531,8 +536,9 @@ const Surat = () => {
           <BaseInput value={alamat} onChange={handleInput} name='alamat' />
           <BaseInput value={rtrw} onChange={handleInput} name='RT/RW' />
           <BaseInput value={maksud} onChange={handleInput} name='maksud' />
-          <BaseInput value={noSuratNumber} onChange={handleInput} name='no surat number' />
+          <BaseInput value={noSuratNumber} onChange={handleInput} name='no surat number' idInput='noSuratNumber' />
           <BaseInput value={noSurat} onChange={handleInput} name='no surat' disabled='on' />
+          <BaseInput value={noSuratPengantar} onChange={handleInput} name='no surat pengantar' />
           <SelectInput value={idPegawai} name='pegawai' onChange={handleInput}>
             {pegawaiList.map((pegawai) => (
               <option key={pegawai.id} value={pegawai.id}>{pegawai.nama}</option>
@@ -585,21 +591,21 @@ const Surat = () => {
             Sepanjang pengamatan kami serta pengetahuan kami, hingga saat ini dikeluarkan surat 
             keterangan ini, Oknum tersebut belum pernah tersangkut dalam perkara pidana kriminal, 
             serta berkelakuan baik terhadap masyarakat sesuai dengan Surat Pengantar RT/RW 
-            Nomor: {formatedNoSuratDesc(noSurat, rtrw)}, tanggal {formatDateFromISO(suratCreatedAt)}.
-           
+            Nomor: {`${noSuratPengantar}/${formatToDot(rtrw)}/BLR/${monthRomawi}/${year}`}, tanggal {formatDateFromISO(suratCreatedAt)}.
+            {/* Nomor: {formatedNoSuratDesc(noSurat, rtrw)}, tanggal {formatDateFromISO(suratCreatedAt)}. */}
           </Paragraf>
 
           <Paragraf id='descSKRumah'>
             Bahwa nama tersebut di atas adalah Warga/Penduduk Kelurahan Balaroa Kecamatan Palu Barat 
             dan benar yang bersangkutan belum memiliki rumah, sesuai dengan Surat Pengantar 
-            Nomor: {formatedNoSuratDesc(noSurat, rtrw)}, tanggal {formatDateFromISO(suratCreatedAt)}.
+            Nomor: {`${noSuratPengantar}/${formatToDot(rtrw)}/BLR/${monthRomawi}/${year}`}, tanggal {formatDateFromISO(suratCreatedAt)}.
           </Paragraf>
 
           <div id='descSKKerja'>
             <Paragraf>
               Bahwa benar nama tersebut di atas adalah Warga/Penduduk Kelurahan Balaroa Kecamatan 
               Palu Barat dan sepanjang pengetahuan kami belum bekerja, sesuai dengan Surat Pengantar 
-              RT. Nomor: {formatedNoSuratDesc(noSurat, rtrw)}, tanggal {formatDateFromISO(suratCreatedAt)}.
+              Nomor: {`${noSuratPengantar}/${formatToDot(rtrw)}/BLR/${monthRomawi}/${year}`}, tanggal {formatDateFromISO(suratCreatedAt)}.
             </Paragraf>
             <Paragraf>{descOpt}</Paragraf>
           </div>
@@ -608,7 +614,7 @@ const Surat = () => {
             <Paragraf>
               Bahwa benar nama tersebut di atas adalah Warga/Penduduk Kelurahan Balaroa Kecamatan 
               Palu Barat dan sepanjang pengetahuan kami belum pernah menikah, sesuai dengan Surat 
-              Pengantar RT. Nomor: {formatedNoSuratDesc(noSurat, rtrw)}, tanggal {formatDateFromISO(suratCreatedAt)}.
+              Nomor: {`${noSuratPengantar}/${formatToDot(rtrw)}/BLR/${monthRomawi}/${year}`}, tanggal {formatDateFromISO(suratCreatedAt)}.
             </Paragraf>
 
             <Paragraf>{descOpt}</Paragraf>

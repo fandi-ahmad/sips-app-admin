@@ -88,3 +88,17 @@ export const printSurat = (elementId) => {
     element.style.display = '';
   });
 };
+
+export const formatToDot = (input) => {
+  // "/" => "."
+  const parts = input.split("/");
+  const part1 = parseInt(parts[0]);
+  const part2 = parseInt(parts[1]);
+
+  // Menggunakan format angka dengan 3 digit, misalnya: 001, 004
+  const formattedPart1 = part1.toString().padStart(3, '0');
+  const formattedPart2 = part2.toString().padStart(3, '0');
+
+  const result = `${formattedPart1}.${formattedPart2}`;
+  return result;
+}

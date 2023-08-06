@@ -39,7 +39,7 @@ export const BaseInput = (props) => {
         <label className={`block text-sm ${props.className}`} id={props.id}>
             <span className={`text-gray-700 capitalize ${props.classLabel}`}>{props.label || props.name}</span>
             <input type={props.type || 'text'} value={props.value} onChange={props.onChange} name={props.name} placeholder={props.placeholder || 'Type here'}
-                disabled={props.disabled} onKeyUp={props.onKeyUp} autoComplete={props.autoComplete}
+                disabled={props.disabled} onKeyUp={props.onKeyUp} autoComplete={props.autoComplete} id={props.idInput}
                 className='block w-full mt-1 text-sm bg-transparent p-2 border border-gray-600 rounded-md form-input disabled:bg-slate-300'
             />
         </label>
