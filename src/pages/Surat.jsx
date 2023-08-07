@@ -172,7 +172,7 @@ const Surat = () => {
           await CreateSuratKetUsaha({
             nama_surat: suratName, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
             tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
-            status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
+            status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat, 
             no_surat_number: noSuratNumber, maksud: maksud, no_surat_pengantar: noSuratPengantar, id_pegawai: idPegawai,
             nama_usaha: namaUsaha, jenis_usaha: jenisUsaha, npwp: npwp, no_izin_usaha: noIzinUsaha,
             no_fiskal: noFiskal, luas_tempat_usaha: luasTempatUsaha, alamat_usaha: alamatUsaha,
@@ -199,17 +199,6 @@ const Surat = () => {
 
   const setDataSurat = (surat) => {
     const warga = surat.warga
-    if (surat.ket_usaha) {
-      const usaha = surat.ket_usaha
-      setNamaUsaha(usaha.nama_usaha)
-      setJenisUsaha(usaha.jenis_usaha)
-      setNpwp(usaha.npwp)
-      setNoIzinUsaha(usaha.no_izin_usaha)
-      setNoFiskal(usaha.no_fiskal)
-      setLuasTempatUsaha(usaha.luas_tempat_usaha)
-      setAlamatUsaha(usaha.alamat_usaha)
-      setTahunBerdiri(usaha.tahun_berdiri)
-    }
     setNamaPegawai(surat.pegawai.nama)
     setJabatanPegawai(surat.pegawai.jabatan)
     setNipPegawai(surat.pegawai.nip)
@@ -228,10 +217,22 @@ const Surat = () => {
     setIdSurat(surat.id)
     setNoSuratNumber(surat.no_surat_number)
     setNoSurat(surat.no_surat)
-    setNoSuratPengantar(surat.no_surat_pengantar || '-')
+    setNoSuratPengantar(surat.no_surat_pengantar)
     setMaksud(surat.maksud)
     setSuratCreatedAt(surat.createdAt)
     setIdPegawai(surat.pegawai.id_pegawai)
+    if (surat.ket_usaha) {
+      const usaha = surat.ket_usaha
+      setNamaUsaha(usaha.nama_usaha)
+      setJenisUsaha(usaha.jenis_usaha)
+      setNpwp(usaha.npwp)
+      setNoIzinUsaha(usaha.no_izin_usaha)
+      setNoFiskal(usaha.no_fiskal)
+      setLuasTempatUsaha(usaha.luas_tempat_usaha)
+      setAlamatUsaha(usaha.alamat_usaha)
+      setTahunBerdiri(usaha.tahun_berdiri)
+    }
+    
   }
 
   const resetData = () => {
@@ -310,7 +311,7 @@ const Surat = () => {
         await UpdateSuratKetUsaha({
           id_surat: idSurat, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
           tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
-          status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
+          status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat, no_surat_pengantar: noSuratPengantar,
           no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai,
           nama_usaha: namaUsaha, jenis_usaha: jenisUsaha, npwp: npwp, no_izin_usaha: noIzinUsaha, no_fiskal: noFiskal,
           luas_tempat_usaha: luasTempatUsaha, alamat_usaha: alamatUsaha, tahun_berdiri: tahunBerdiri
@@ -319,7 +320,7 @@ const Surat = () => {
         await UpdateSuratByType({
           id: idSurat, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
           tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
-          status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
+          status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat, no_surat_pengantar: noSuratPengantar,
           no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai
         })
       }

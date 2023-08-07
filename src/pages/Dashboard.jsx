@@ -33,6 +33,7 @@ const Dashboard = () => {
         <Card title='pegawai' color='blue' value={pegawai} />
         <Card title='surat' icon='fa-file-lines' color='yellow' value={surat} />
       </div>
+      <p className='text-yellow-500 hidden'>text</p>
     </Layout>
   )
 }
