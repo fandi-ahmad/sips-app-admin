@@ -48,6 +48,7 @@ const Surat = () => {
   const [suratName, setSuratName] = useState('')
   const [suratCreatedAt, setSuratCreatedAt] = useState('')
   const [noSuratPengantar, setNoSuratPengantar] = useState('')
+  const [variabel, setVariabel] = useState('')
 
   const [namaPegawai, setNamaPegawai] = useState('')
   const [nipPegawai, setNipPegawai] = useState('')
@@ -158,7 +159,7 @@ const Surat = () => {
         pekerjaan === '' || negara === '' || status === '' || agama === '' || alamat === '' || rtrw === '' ||
         noSuratNumber === '' || maksud === '' || idPegawai === ''
       ) {
-        AlertError('input tidak boleh kosaong')
+        AlertError('input tidak boleh kosong')
       } else {
         // const checkNoSurat = await GetSuratByType('', '', '', noSurat, '', '')
         // if (checkNoSurat.status !== 404) {
@@ -172,7 +173,7 @@ const Surat = () => {
           await CreateSuratKetUsaha({
             nama_surat: suratName, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
             tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
-            status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat, 
+            status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat, variabel: `/BLR/${monthRomawi}/${year}`,
             no_surat_number: noSuratNumber, maksud: maksud, no_surat_pengantar: noSuratPengantar, id_pegawai: idPegawai,
             nama_usaha: namaUsaha, jenis_usaha: jenisUsaha, npwp: npwp, no_izin_usaha: noIzinUsaha,
             no_fiskal: noFiskal, luas_tempat_usaha: luasTempatUsaha, alamat_usaha: alamatUsaha,
@@ -182,7 +183,7 @@ const Surat = () => {
           await CreateSuratByType({
             nama_surat: suratName, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
             tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
-            status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
+            status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat, variabel: `/BLR/${monthRomawi}/${year}`,
             no_surat_number: noSuratNumber, maksud: maksud, no_surat_pengantar: noSuratPengantar, id_pegawai: idPegawai
           })
         }
@@ -217,7 +218,8 @@ const Surat = () => {
     setIdSurat(surat.id)
     setNoSuratNumber(surat.no_surat_number)
     setNoSurat(surat.no_surat)
-    setNoSuratPengantar(surat.no_surat_pengantar)
+    setVariabel(surat.variabel)
+    setNoSuratPengantar(surat.no_surat_pengantar || '-')
     setMaksud(surat.maksud)
     setSuratCreatedAt(surat.createdAt)
     setIdPegawai(surat.pegawai.id_pegawai)
@@ -592,21 +594,20 @@ const Surat = () => {
             Sepanjang pengamatan kami serta pengetahuan kami, hingga saat ini dikeluarkan surat 
             keterangan ini, Oknum tersebut belum pernah tersangkut dalam perkara pidana kriminal, 
             serta berkelakuan baik terhadap masyarakat sesuai dengan Surat Pengantar RT/RW 
-            Nomor: {`${noSuratPengantar}/${formatToDot(rtrw)}/BLR/${monthRomawi}/${year}`}, tanggal {formatDateFromISO(suratCreatedAt)}.
-            {/* Nomor: {formatedNoSuratDesc(noSurat, rtrw)}, tanggal {formatDateFromISO(suratCreatedAt)}. */}
+            Nomor: {noSuratPengantar}/{formatToDot(rtrw)}{variabel}, tanggal {formatDateFromISO(suratCreatedAt)}.
           </Paragraf>
 
           <Paragraf id='descSKRumah'>
             Bahwa nama tersebut di atas adalah Warga/Penduduk Kelurahan Balaroa Kecamatan Palu Barat 
             dan benar yang bersangkutan belum memiliki rumah, sesuai dengan Surat Pengantar 
-            Nomor: {`${noSuratPengantar}/${formatToDot(rtrw)}/BLR/${monthRomawi}/${year}`}, tanggal {formatDateFromISO(suratCreatedAt)}.
+            Nomor: {noSuratPengantar}/{formatToDot(rtrw)}{variabel}, tanggal {formatDateFromISO(suratCreatedAt)}.
           </Paragraf>
 
           <div id='descSKKerja'>
             <Paragraf>
               Bahwa benar nama tersebut di atas adalah Warga/Penduduk Kelurahan Balaroa Kecamatan 
               Palu Barat dan sepanjang pengetahuan kami belum bekerja, sesuai dengan Surat Pengantar 
-              Nomor: {`${noSuratPengantar}/${formatToDot(rtrw)}/BLR/${monthRomawi}/${year}`}, tanggal {formatDateFromISO(suratCreatedAt)}.
+              Nomor: {noSuratPengantar}/{formatToDot(rtrw)}{variabel}, tanggal {formatDateFromISO(suratCreatedAt)}.
             </Paragraf>
             <Paragraf>{descOpt}</Paragraf>
           </div>
@@ -615,7 +616,7 @@ const Surat = () => {
             <Paragraf>
               Bahwa benar nama tersebut di atas adalah Warga/Penduduk Kelurahan Balaroa Kecamatan 
               Palu Barat dan sepanjang pengetahuan kami belum pernah menikah, sesuai dengan Surat 
-              Nomor: {`${noSuratPengantar}/${formatToDot(rtrw)}/BLR/${monthRomawi}/${year}`}, tanggal {formatDateFromISO(suratCreatedAt)}.
+              Nomor: {noSuratPengantar}/{formatToDot(rtrw)}{variabel}, tanggal {formatDateFromISO(suratCreatedAt)}.
             </Paragraf>
 
             <Paragraf>{descOpt}</Paragraf>
