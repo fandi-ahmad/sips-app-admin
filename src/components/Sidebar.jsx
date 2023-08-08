@@ -75,10 +75,10 @@ const Sidebar = () => {
     return (
         <aside className="aside is-placed-left is-expanded" style={{ minHeight: '100vh', maxHeight: 'fit-content', overflowY: 'auto' }}>
             <div className='h-5/6'>
-                <div className="aside-tools py-2 h-20">
+                <div className="aside-tools py-4 h-28 flex flex-col gap-2">
                     <img src={logoImage} alt="" className='w-10 mr-2' />
                     <div>
-                        <b className="font-black">Kel. Balaroa</b>
+                        <b className="font-black">Kelurahan Balaroa</b>
                     </div>
                 </div>
                 <div className="menu is-menu-main">
