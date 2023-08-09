@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import Layout from '../layouts/Layout'
 import { BasicButton } from '../components/BaseButton'
-import { GetSuratByType, CreateSuratByType, GetWarga, UpdateSuratByType, GetAllSurat, GetWargaById, CreateSuratKetUsaha, GetSuratKetUsaha, UpdateSuratKetUsaha } from '../api/suratApi'   //api
+import { GetSuratByType, CreateSuratByType, GetWarga, UpdateSuratByType, GetAllSurat, GetWargaById, CreateSuratKetUsaha, GetSuratKetUsaha, UpdateSuratKetUsaha, CreateSuratKematian, getSuratKematian, UpdateSuratKematian } from '../api/suratApi'   //api
 import { GetPegawai } from '../api/pegawaiApi'     // api
 import { BaseModal, openModal, closeModal, ModalLoading } from '../components/BaseModal'
 import { BaseInput, InputIcon, SearchInput, SelectInput } from '../components/BaseInput'
@@ -73,6 +73,15 @@ const Surat = () => {
   const [bertempat, setBertempat] = useState('')
   const [penghasilan, setPenghasilan] = useState('')
 
+  // data kematian
+  const [sebabKematian, setSebabKematian] = useState('')
+  const [tempatKematian, setTempatKematian] = useState('')
+  const [hariTgl, setHariTgl] = useState('')
+  const [hubungan, setHubungan] = useState('')
+  const [namaP, setNamap] = useState('')
+  const [nikP, setNikp] = useState('')
+  const [alamatP, setAlamatP] = useState('')
+
   const getAllData = async (namaSurat = '', search = '') => {
     try {
       // const response = await GetAllSurat(page, limit, namaSurat)
@@ -108,12 +117,14 @@ const Surat = () => {
     suratName === 'surat keterangan usaha' ? removeAdd('formDataUsaha', 'remove') : removeAdd('formDataUsaha', 'add')
     suratName === 'surat keterangan domisili usaha' ? removeAdd('formDataDomUsaha', 'remove') : removeAdd('formDataDomUsaha', 'add')
     suratName === 'surat keterangan penghasilan' ? removeAdd('formDataPenghasilan', 'remove') : removeAdd('formDataPenghasilan', 'add')
+    suratName === 'surat keterangan kematian' ? removeAdd('formDataKematian', 'remove') : removeAdd('formDataKematian', 'add')
 
     suratName === 'surat keterangan berkelakuan baik' ? setSuratKey(301) : null
     suratName === 'surat keterangan belum memiliki rumah' ? setSuratKey(460) : null
-    suratName === 'surat keterangan belum bekerja' || suratName === 'surat keterangan belum menikah' ? setSuratKey(474.5) : null
+    suratName === 'surat keterangan belum bekerja' || suratName === 'surat keterangan belum menikah' ? setSuratKey('474.5') : null
     suratName === 'surat keterangan usaha' || suratName === 'surat keterangan domisili usaha' ? setSuratKey(517) : null
     suratName === 'surat keterangan penghasilan' ? setSuratKey('010') : null
+    suratName === 'surat keterangan kematian' ? setSuratKey('474.3') : null
   }
 
   const previousCreateSuratName = () => {
@@ -152,6 +163,13 @@ const Surat = () => {
       case 'tahun berdiri': setTahunBerdiri(value); break;
       case 'bertempat': setBertempat(value); break;
       case 'penghasilan': setPenghasilan(value); break;
+      case 'sebab kematian': setSebabKematian(value); break;
+      case 'tempat kematian': setTempatKematian(value); break;
+      case 'hari tanggal': setHariTgl(value); break;
+      case 'hubungan': setHubungan(value); break;
+      case 'nama pelapor': setNamap(value); break;
+      case 'nik pelapor': setNikp(value); break;
+      case 'alamat pelapor': setAlamatP(value); break;
       case 'search': setSearch(value); break;
       default: break;
     }
@@ -183,6 +201,15 @@ const Surat = () => {
             nama_usaha: namaUsaha, jenis_usaha: jenisUsaha, npwp: npwp, no_izin_usaha: noIzinUsaha,
             no_fiskal: noFiskal, luas_tempat_usaha: luasTempatUsaha, alamat_usaha: alamatUsaha,
             tahun_berdiri: tahunBerdiri, bertempat: bertempat, penghasilan: penghasilan
+          })
+        } else if (suratName === 'surat keterangan kematian') {
+          await CreateSuratKematian({
+            nama_surat: suratName, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
+            tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
+            status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat, variabel: `/BLR/${monthRomawi}/${year}`,
+            no_surat_number: noSuratNumber, maksud: maksud, no_surat_pengantar: noSuratPengantar, id_pegawai: idPegawai,
+            sebab_kematian: sebabKematian, tempat_kematian: sebabKematian, hari_tanggal: hariTgl, hubungan: hubungan,
+            nama_p: namaP, nik_p: nikP, alamat_p: alamatP
           })
         } else {
           await CreateSuratByType({
@@ -240,6 +267,16 @@ const Surat = () => {
       setTahunBerdiri(usaha.tahun_berdiri)
       setPenghasilan(usaha.penghasilan)
     }
+    if (surat.ket_kematian) {
+      const mati = surat.ket_kematian
+      setSebabKematian(mati.sebab_kematian)
+      setTempatKematian(mati.tempat_kematian)
+      setHariTgl(mati.hari_tanggal)
+      setNamap(mati.nama_pelapor)
+      setNikp(mati.nik_pelapor)
+      setAlamatP(mati.alamat_pelapor)
+      setHubungan(mati.hubungan)
+    }
     
   }
 
@@ -250,6 +287,8 @@ const Surat = () => {
 
     setNamaUsaha(''); setJenisUsaha(''); setNpwp(''); setNoIzinUsaha(''); setNoFiskal('')
     setLuasTempatUsaha(''); setAlamatUsaha(''); setTahunBerdiri(''); setBertempat('')
+
+    setSebabKematian(''); setTempatKematian(''); setHariTgl(''); setHubungan(''); setNamap(''); setNikp(''); setAlamatP('')
   }
 
   const hideShowDesc = (id) => {
@@ -303,18 +342,23 @@ const Surat = () => {
 
   const editSurat = async (surat) => {
     const removeAdd = (id, action) => getId(id).classList[action]('hidden')
-    surat.nama_surat === 'surat keterangan usaha' ? removeAdd('formDataUsaha', 'remove') : removeAdd('formDataUsaha', 'add')
-    surat.nama_surat === 'surat keterangan domisili usaha' ? removeAdd('formDataDomUsaha', 'remove') : removeAdd('formDataDomUsaha', 'add')
-    surat.nama_surat === 'surat keterangan penghasilan' ? removeAdd('formDataPenghasilan', 'remove') : removeAdd('formDataPenghasilan', 'add')
+    const namecek = surat.nama_surat
+    namecek === 'surat keterangan usaha' ? removeAdd('formDataUsaha', 'remove') : removeAdd('formDataUsaha', 'add')
+    namecek === 'surat keterangan domisili usaha' ? removeAdd('formDataDomUsaha', 'remove') : removeAdd('formDataDomUsaha', 'add')
+    namecek === 'surat keterangan penghasilan' ? removeAdd('formDataPenghasilan', 'remove') : removeAdd('formDataPenghasilan', 'add')
+    namecek === 'surat keterangan kematian' ? removeAdd('formDataKematian', 'remove') : removeAdd('formDataKematian', 'add')
 
     getId('noSuratNumber').setAttribute('disabled', 'on')
     setActText('update')
     getId('btnCreate').classList.add('hidden')
     getId('btnUpdate').classList.remove('hidden')
     openModal('upsert')
-    if (surat.id_surat_khusus) {
+    if (namecek === 'surat keterangan usaha' || namecek === 'surat keterangan domisili usaha' || suratName === 'surat keterangan penghasilan') {
       const sUsaha = await GetSuratKetUsaha(surat.nama_surat, surat.id)
       setDataSurat(sUsaha.data[0])
+    } else if (namecek === 'surat keterangan kematian') {
+      const sMati = await getSuratKematian(surat.id)
+      setDataSurat(sMati.data[0])
     } else {
       setDataSurat(surat)
     }
@@ -333,6 +377,15 @@ const Surat = () => {
           no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai,
           nama_usaha: namaUsaha, jenis_usaha: jenisUsaha, npwp: npwp, no_izin_usaha: noIzinUsaha, no_fiskal: noFiskal,
           luas_tempat_usaha: luasTempatUsaha, alamat_usaha: alamatUsaha, tahun_berdiri: tahunBerdiri, penghasilan: penghasilan
+        })
+      } else if (suratName === 'surat keterangan kematian') {
+        await UpdateSuratKematian({
+          id_surat: idSurat, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
+          tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
+          status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat, no_surat_pengantar: noSuratPengantar,
+          no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai,
+          sebab_kematian: sebabKematian, tempat_kematian: tempatKematian, hari_tanggal: hariTgl, 
+          nama_p: namaP, nik_p: nikP, alamat_p: alamatP, hubungan: hubungan
         })
       } else {
         await UpdateSuratByType({
@@ -462,6 +515,7 @@ const Surat = () => {
                 <option value="surat keterangan usaha">surat keterangan usaha</option>
                 <option value="surat keterangan domisili usaha">surat keterangan domisili usaha</option>
                 <option value="surat keterangan penghasilan">surat keterangan penghasilan</option>
+                <option value="surat keterangan kematian">surat keterangan kematian</option>
               </SelectInput>
             </TableHeader>
             <table className='text-slate-800'>
@@ -526,6 +580,7 @@ const Surat = () => {
           <option value="surat keterangan usaha">surat keterangan usaha</option>
           <option value="surat keterangan domisili usaha">surat keterangan domisili usaha</option>
           <option value="surat keterangan penghasilan">surat keterangan penghasilan</option>
+          <option value="surat keterangan kematian">surat keterangan kematian</option>
         </SelectInput>
         <div className="modal-action pt-4">
           <BasicButton onClick={() => closeModal('createSuratName')} title='Close' className='bg-gray-500 text-white' />
@@ -595,6 +650,18 @@ const Surat = () => {
             <BaseInput value={jenisUsaha} onChange={handleInput} name='jenis usaha' />
             <BaseInput value={alamatUsaha} onChange={handleInput} name='alamat usaha' />
             <BaseInput value={penghasilan} onChange={handleInput} name='penghasilan' />
+          </div>
+        </div>
+        <div className='mt-8 hidden' id='formDataKematian'>
+          <div className='text-xl mb-2 font-bold'>Data Kematian</div>
+          <div className='grid grid-cols-4 gap-4'>
+            <BaseInput value={sebabKematian} onChange={handleInput} name='sebab kematian' />
+            <BaseInput value={tempatKematian} onChange={handleInput} name='tempat kematian' />
+            <BaseInput value={hariTgl} onChange={handleInput} name='hari tanggal' type='date' />
+            <BaseInput value={namaP} onChange={handleInput} name='nama pelapor' />
+            <BaseInput value={nikP} onChange={handleInput} name='nik pelapor' />
+            <BaseInput value={alamatP} onChange={handleInput} name='alamat pelapor' />
+            <BaseInput value={hubungan} onChange={handleInput} name='hubungan' />
           </div>
         </div>
         <div className="modal-action pt-4">

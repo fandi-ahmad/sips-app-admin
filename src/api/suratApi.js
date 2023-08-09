@@ -45,6 +45,19 @@ export const UpdateSuratKetUsaha = (data) => {
     return callApi('put', `${apiUrl}/surat/usaha/update`, data, Auth())
 }
 
+// kematian
+export const getSuratKematian = (id) => {
+    return callApi('get', `${apiUrl}/surat/kematian?id=${id}`, Auth())
+}
+
+export const CreateSuratKematian = (data) => {
+    return callApi('post', `${apiUrl}/surat/kematian`, data, Auth())
+}
+
+export const UpdateSuratKematian = (data) => {
+    return callApi('put', `${apiUrl}/surat/kematian/update`, data, Auth())
+}
+
 // dashboard
 export const GetDataDashboard = () => {
     return callApi('get', `${apiUrl}/dashboard`, Auth())
