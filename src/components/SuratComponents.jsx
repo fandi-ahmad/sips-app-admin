@@ -15,7 +15,7 @@ export const BaseSurat = (props) => {
 
 export const Paragraf = (props) => {
   return (
-    <p id={props.id} className={`text-justify mt-2 indent-10 ${props.className}`}>{props.children}</p>
+    <p id={props.id} className={`text-justify mt-2 ${props.tab || 'indent-10'} ${props.className}`}>{props.children}</p>
   )
 }
 

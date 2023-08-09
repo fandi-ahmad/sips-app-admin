@@ -182,7 +182,7 @@ const Surat = () => {
             no_surat_number: noSuratNumber, maksud: maksud, no_surat_pengantar: noSuratPengantar, id_pegawai: idPegawai,
             nama_usaha: namaUsaha, jenis_usaha: jenisUsaha, npwp: npwp, no_izin_usaha: noIzinUsaha,
             no_fiskal: noFiskal, luas_tempat_usaha: luasTempatUsaha, alamat_usaha: alamatUsaha,
-            tahun_berdiri: tahunBerdiri, bertempat: bertempat, penghasilan: parseInt(penghasilan)
+            tahun_berdiri: tahunBerdiri, bertempat: bertempat, penghasilan: penghasilan
           })
         } else {
           await CreateSuratByType({
@@ -238,6 +238,7 @@ const Surat = () => {
       setLuasTempatUsaha(usaha.luas_tempat_usaha)
       setAlamatUsaha(usaha.alamat_usaha)
       setTahunBerdiri(usaha.tahun_berdiri)
+      setPenghasilan(usaha.penghasilan)
     }
     
   }
@@ -304,6 +305,7 @@ const Surat = () => {
     const removeAdd = (id, action) => getId(id).classList[action]('hidden')
     surat.nama_surat === 'surat keterangan usaha' ? removeAdd('formDataUsaha', 'remove') : removeAdd('formDataUsaha', 'add')
     surat.nama_surat === 'surat keterangan domisili usaha' ? removeAdd('formDataDomUsaha', 'remove') : removeAdd('formDataDomUsaha', 'add')
+    surat.nama_surat === 'surat keterangan penghasilan' ? removeAdd('formDataPenghasilan', 'remove') : removeAdd('formDataPenghasilan', 'add')
 
     getId('noSuratNumber').setAttribute('disabled', 'on')
     setActText('update')
@@ -330,7 +332,7 @@ const Surat = () => {
           status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat, no_surat_pengantar: noSuratPengantar,
           no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai,
           nama_usaha: namaUsaha, jenis_usaha: jenisUsaha, npwp: npwp, no_izin_usaha: noIzinUsaha, no_fiskal: noFiskal,
-          luas_tempat_usaha: luasTempatUsaha, alamat_usaha: alamatUsaha, tahun_berdiri: tahunBerdiri, penghasilan: parseInt(penghasilan)
+          luas_tempat_usaha: luasTempatUsaha, alamat_usaha: alamatUsaha, tahun_berdiri: tahunBerdiri, penghasilan: penghasilan
         })
       } else {
         await UpdateSuratByType({
@@ -661,7 +663,7 @@ const Surat = () => {
 
           <Paragraf id='descSKPenghasilan'>
             Bahwa benar yang namaya tersebut di atas adalah Warga/Penduduk Kelurahan Balaroa Kecamatan 
-            Palu Barat Kota Palu, RT.{rtrw}, memiliki Usaha {jenisUsaha} di {alamatUsaha} dan memiliki 
+            Palu Barat Kota Palu, RT. {rtrw}, memiliki Usaha <span className='capitalize'>{jenisUsaha}</span> di {alamatUsaha} dan memiliki 
             berpenghasilan Rp. ±{penghasilan},-/Bulan, sesuai dengan Surat Pengantar RT 
             No: {noSuratPengantar}/{formatToDot(rtrw)}{variabel}, Tanggal {formatDateFromISO(suratCreatedAt)}.
           </Paragraf>
