@@ -63,8 +63,8 @@ export const HeadPegawai = (props) => {
 
 const FormTitle = (props) => {
   return (
-    <div className={`flex flex-row ${props.className}`} id={props.id}>
-      <div className="w-60 ml-10 text-left">{props.title}</div> : {props.data}
+    <div className={`flex flex-row`} id={props.id}>
+      <div className="w-60 ml-10 text-left">{props.title}</div> : <span className={`pl-1 ${props.className}`}>{props.data}</span>
     </div>
   )
 }
@@ -92,7 +92,7 @@ export const UsahaWarga = (props) => {
   return (
     <div className="my-table mb-2" id={props.id}>
       <div className="text-left">Benar yang bersangkutan diatas mempunyai Usaha yaitu:</div>
-      <FormTitle title='Nama Usaha' data={props.nama} className='uppercase' />
+      <FormTitle title='Nama Usaha' data={props.nama} />
       <FormTitle title='Jenis Usaha' data={props.jenis} />
       <FormTitle title='NPWP' data={props.npwp} />
       <FormTitle title='Nomor Izin Usaha' data={props.noIzinUsaha} />
@@ -101,6 +101,19 @@ export const UsahaWarga = (props) => {
       <FormTitle title='Alamat Usaha' data={props.alamat} />
       <FormTitle title='Tahun Berdiri Usaha' data={props.tahun} />
       <FormTitle title='Maksud' data={props.maksud} id='maksudUsahaWarga' className='italic' />
+    </div>
+  )
+}
+
+export const DomisiliUsaha = (props) => {
+  return (
+    <div className="my-table mb-2" id={props.id}>
+      <div className="text-left">Bahwa benar nama tersebut diatas memiliki/mempunyai Usaha yaitu:</div>
+      <FormTitle title='Nama Usaha' data={props.nama} />
+      <FormTitle title='Jenis Usaha' data={props.jenis} />
+      <FormTitle title='Alamat Usaha' data={props.alamat} />
+      <FormTitle title='Tahun Berdiri Usaha' data={props.tahun} />
+      <FormTitle title='Bertempat di' data='Kelurahan Balaroa Kecamatan Palu Barat' />
     </div>
   )
 }

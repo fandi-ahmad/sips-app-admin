@@ -33,8 +33,8 @@ export const UpdateSuratByType = (data) => {
 };
 
 // usaha
-export const GetSuratKetUsaha = (id) => {
-    return callApi('get', `${apiUrl}/surat/usaha?id=${id}`, Auth())
+export const GetSuratKetUsaha = (name, id) => {
+    return callApi('get', `${apiUrl}/surat/usaha?name=${name}&id=${id}`, Auth())
 }
 
 export const CreateSuratKetUsaha = (data) => {

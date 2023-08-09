@@ -7,7 +7,7 @@ import { BaseModal, openModal, closeModal, ModalLoading } from '../components/Ba
 import { BaseInput, InputIcon, SearchInput, SelectInput } from '../components/BaseInput'
 import { AlertError, AlertSuccess } from '../components/SweetAlert'
 import { getId, formatDateMounth, formatedNoSurat, formatedNoSuratDesc, printSurat, formatDateFromISO, formatToDot } from '../function/baseFunction'
-import { FooterTtd, BiodataWarga, HeadPegawai, KopSurat, BaseSurat, Paragraf, UsahaWarga } from '../components/SuratComponents'
+import { FooterTtd, BiodataWarga, HeadPegawai, KopSurat, BaseSurat, Paragraf, UsahaWarga, DomisiliUsaha } from '../components/SuratComponents'
 import { TableHeader, TablePaginate } from '../components/BaseTable'
 
 const Surat = () => {
@@ -71,6 +71,7 @@ const Surat = () => {
   const [alamatUsaha, setAlamatUsaha] = useState('')
   const [tahunBerdiri, setTahunBerdiri] = useState('')
   const [bertempat, setBertempat] = useState('')
+  const [penghasilan, setPenghasilan] = useState('')
 
   const getAllData = async (namaSurat = '', search = '') => {
     try {
@@ -103,14 +104,16 @@ const Surat = () => {
       openModal('upsert')
     }
 
-    const removeAdd = (action) => getId('formDataUsaha').classList[action]('hidden')
-    suratName === 'surat keterangan usaha' ? removeAdd('remove') : removeAdd('add')
+    const removeAdd = (id, action) => getId(id).classList[action]('hidden')
+    suratName === 'surat keterangan usaha' ? removeAdd('formDataUsaha', 'remove') : removeAdd('formDataUsaha', 'add')
+    suratName === 'surat keterangan domisili usaha' ? removeAdd('formDataDomUsaha', 'remove') : removeAdd('formDataDomUsaha', 'add')
+    suratName === 'surat keterangan penghasilan' ? removeAdd('formDataPenghasilan', 'remove') : removeAdd('formDataPenghasilan', 'add')
 
     suratName === 'surat keterangan berkelakuan baik' ? setSuratKey(301) : null
-    suratName === 'surat keterangan usaha' || suratName === 'surat keterangan domisili usaha' ? setSuratKey(517) : null
     suratName === 'surat keterangan belum memiliki rumah' ? setSuratKey(460) : null
     suratName === 'surat keterangan belum bekerja' || suratName === 'surat keterangan belum menikah' ? setSuratKey(474.5) : null
-    suratName === 'surat keterangan usaha' ? setSuratKey(517) : null
+    suratName === 'surat keterangan usaha' || suratName === 'surat keterangan domisili usaha' ? setSuratKey(517) : null
+    suratName === 'surat keterangan penghasilan' ? setSuratKey('010') : null
   }
 
   const previousCreateSuratName = () => {
@@ -147,6 +150,8 @@ const Surat = () => {
       case 'luas tempat usaha': setLuasTempatUsaha(value); break;
       case 'alamat usaha': setAlamatUsaha(value); break;
       case 'tahun berdiri': setTahunBerdiri(value); break;
+      case 'bertempat': setBertempat(value); break;
+      case 'penghasilan': setPenghasilan(value); break;
       case 'search': setSearch(value); break;
       default: break;
     }
@@ -169,7 +174,7 @@ const Surat = () => {
         closeModal('upsert')
         openModal('modal-loading')
 
-        if (suratName === 'surat keterangan usaha') {
+        if (suratName === 'surat keterangan usaha' || suratName === 'surat keterangan domisili usaha' || suratName === 'surat keterangan penghasilan') {
           await CreateSuratKetUsaha({
             nama_surat: suratName, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
             tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
@@ -177,7 +182,7 @@ const Surat = () => {
             no_surat_number: noSuratNumber, maksud: maksud, no_surat_pengantar: noSuratPengantar, id_pegawai: idPegawai,
             nama_usaha: namaUsaha, jenis_usaha: jenisUsaha, npwp: npwp, no_izin_usaha: noIzinUsaha,
             no_fiskal: noFiskal, luas_tempat_usaha: luasTempatUsaha, alamat_usaha: alamatUsaha,
-            tahun_berdiri: tahunBerdiri, bertempat: bertempat
+            tahun_berdiri: tahunBerdiri, bertempat: bertempat, penghasilan: parseInt(penghasilan)
           })
         } else {
           await CreateSuratByType({
@@ -252,6 +257,8 @@ const Surat = () => {
     getId('descSKKerja').classList.add('hidden')
     getId('descSKBNikah').classList.add('hidden')
     getId('dataUsahaWarga').classList.add('hidden')
+    getId('dataDomisiliUsaha').classList.add('hidden')
+    getId('descSKPenghasilan').classList.add('hidden')
     getId(id).classList.remove('hidden')
   }
 
@@ -269,7 +276,12 @@ const Surat = () => {
     } else if (nameCek === 'surat keterangan usaha') {
       hideShowDesc('dataUsahaWarga')
       getId('maksudWarga').classList.add('hidden')
+    } else if (nameCek === 'surat keterangan domisili usaha') {
+      hideShowDesc('dataDomisiliUsaha')
+    } else if (nameCek === 'surat keterangan penghasilan') {
+      hideShowDesc('descSKPenghasilan')
     }
+
     if (surat.pegawai.jabatan === 'lurah balaroa') {
       getId('anLurah').classList.add('hidden')
       getId('ttdJabatan').classList.add('uppercase')
@@ -281,7 +293,7 @@ const Surat = () => {
     }
     openModal('suratPreview')
     if (surat.id_surat_khusus) {
-      const sUsaha = await GetSuratKetUsaha(surat.id)
+      const sUsaha = await GetSuratKetUsaha(nameCek, surat.id)
       setDataSurat(sUsaha.data[0])
     } else {
       setDataSurat(surat)
@@ -289,15 +301,17 @@ const Surat = () => {
   }
 
   const editSurat = async (surat) => {
-    const usahaShow = (method) => getId('formDataUsaha').classList[method]('hidden')
-    surat.nama_surat === 'surat keterangan usaha' ? usahaShow('remove') : usahaShow('add')
+    const removeAdd = (id, action) => getId(id).classList[action]('hidden')
+    surat.nama_surat === 'surat keterangan usaha' ? removeAdd('formDataUsaha', 'remove') : removeAdd('formDataUsaha', 'add')
+    surat.nama_surat === 'surat keterangan domisili usaha' ? removeAdd('formDataDomUsaha', 'remove') : removeAdd('formDataDomUsaha', 'add')
+
     getId('noSuratNumber').setAttribute('disabled', 'on')
     setActText('update')
     getId('btnCreate').classList.add('hidden')
     getId('btnUpdate').classList.remove('hidden')
     openModal('upsert')
     if (surat.id_surat_khusus) {
-      const sUsaha = await GetSuratKetUsaha(surat.id)
+      const sUsaha = await GetSuratKetUsaha(surat.nama_surat, surat.id)
       setDataSurat(sUsaha.data[0])
     } else {
       setDataSurat(surat)
@@ -309,14 +323,14 @@ const Surat = () => {
       closeModal('upsert')
       openModal('modal-loading')
 
-      if (suratName == 'surat keterangan usaha') {
+      if (suratName === 'surat keterangan usaha' || suratName === 'surat keterangan domisili usaha' || suratName === 'surat keterangan penghasilan') {
         await UpdateSuratKetUsaha({
           id_surat: idSurat, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
           tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
           status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat, no_surat_pengantar: noSuratPengantar,
           no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai,
           nama_usaha: namaUsaha, jenis_usaha: jenisUsaha, npwp: npwp, no_izin_usaha: noIzinUsaha, no_fiskal: noFiskal,
-          luas_tempat_usaha: luasTempatUsaha, alamat_usaha: alamatUsaha, tahun_berdiri: tahunBerdiri
+          luas_tempat_usaha: luasTempatUsaha, alamat_usaha: alamatUsaha, tahun_berdiri: tahunBerdiri, penghasilan: parseInt(penghasilan)
         })
       } else {
         await UpdateSuratByType({
@@ -441,10 +455,11 @@ const Surat = () => {
                 <option value="all">select All</option>
                 <option value="surat keterangan berkelakuan baik">surat keterangan berkelakuan baik</option>
                 <option value="surat keterangan belum memiliki rumah">surat keterangan belum memiliki rumah</option>
-                {/* <option value="surat keterangan tidak mampu">surat keterangan tidak mampu</option> */}
-                <option value="surat keterangan usaha">surat keterangan usaha</option>
                 <option value="surat keterangan belum bekerja">surat keterangan belum bekerja</option>
                 <option value="surat keterangan belum menikah">surat keterangan belum menikah</option>
+                <option value="surat keterangan usaha">surat keterangan usaha</option>
+                <option value="surat keterangan domisili usaha">surat keterangan domisili usaha</option>
+                <option value="surat keterangan penghasilan">surat keterangan penghasilan</option>
               </SelectInput>
             </TableHeader>
             <table className='text-slate-800'>
@@ -507,6 +522,8 @@ const Surat = () => {
           <option value="surat keterangan belum bekerja">surat keterangan belum bekerja</option>
           <option value="surat keterangan belum menikah">surat keterangan belum menikah</option>
           <option value="surat keterangan usaha">surat keterangan usaha</option>
+          <option value="surat keterangan domisili usaha">surat keterangan domisili usaha</option>
+          <option value="surat keterangan penghasilan">surat keterangan penghasilan</option>
         </SelectInput>
         <div className="modal-action pt-4">
           <BasicButton onClick={() => closeModal('createSuratName')} title='Close' className='bg-gray-500 text-white' />
@@ -560,7 +577,23 @@ const Surat = () => {
             <BaseInput value={alamatUsaha} onChange={handleInput} name='alamat usaha' />
             <BaseInput value={tahunBerdiri} onChange={handleInput} name='tahun berdiri' />
           </div>
-
+        </div>
+        <div className='mt-8 hidden' id='formDataDomUsaha'>
+          <div className='text-xl mb-2 font-bold'>Data Domisili Usaha</div>
+          <div className='grid grid-cols-4 gap-4'>
+            <BaseInput value={namaUsaha} onChange={handleInput} name='nama usaha' />
+            <BaseInput value={jenisUsaha} onChange={handleInput} name='jenis usaha' />
+            <BaseInput value={alamatUsaha} onChange={handleInput} name='alamat usaha' />
+            <BaseInput value={tahunBerdiri} onChange={handleInput} name='tahun berdiri' />
+          </div>
+        </div>
+        <div className='mt-8 hidden' id='formDataPenghasilan'>
+          <div className='text-xl mb-2 font-bold'>Data Penghasilan</div>
+          <div className='grid grid-cols-4 gap-4'>
+            <BaseInput value={jenisUsaha} onChange={handleInput} name='jenis usaha' />
+            <BaseInput value={alamatUsaha} onChange={handleInput} name='alamat usaha' />
+            <BaseInput value={penghasilan} onChange={handleInput} name='penghasilan' />
+          </div>
         </div>
         <div className="modal-action pt-4">
           <div id='btnCreate'>
@@ -588,6 +621,10 @@ const Surat = () => {
           <UsahaWarga id='dataUsahaWarga'
             nama={namaUsaha} jenis={jenisUsaha} npwp={npwp} noIzinUsaha={noIzinUsaha} noFiskal={noFiskal} 
             luas={luasTempatUsaha} alamat={alamatUsaha} tahun={tahunBerdiri} maksud={maksud}
+          />
+
+          <DomisiliUsaha id='dataDomisiliUsaha'
+            nama={namaUsaha} jenis={jenisUsaha} alamat={alamatUsaha} tahun={tahunBerdiri}
           />
 
           <Paragraf id='descSKBaik'>
@@ -621,6 +658,13 @@ const Surat = () => {
 
             <Paragraf>{descOpt}</Paragraf>
           </div>
+
+          <Paragraf id='descSKPenghasilan'>
+            Bahwa benar yang namaya tersebut di atas adalah Warga/Penduduk Kelurahan Balaroa Kecamatan 
+            Palu Barat Kota Palu, RT.{rtrw}, memiliki Usaha {jenisUsaha} di {alamatUsaha} dan memiliki 
+            berpenghasilan Rp. ±{penghasilan},-/Bulan, sesuai dengan Surat Pengantar RT 
+            No: {noSuratPengantar}/{formatToDot(rtrw)}{variabel}, Tanggal {formatDateFromISO(suratCreatedAt)}.
+          </Paragraf>
 
           <Paragraf>Demikian Surat Keterangan ini dibuat untuk dipergunakan seperlunya.</Paragraf>
           <FooterTtd date={formatDateFromISO(suratCreatedAt)} nama={namaPegawai} jabatan={jabatanPegawai} nip={nipPegawai} />
