@@ -20,8 +20,8 @@ export const GetAllSurat = (page, limit, name) => {
     return callApi('get', `${apiUrl}/surat/all?page=${page}&limit=${limit}&nama_surat=${name}`,  Auth())
 }
 
-export const GetSuratByType = (name, id, id_warga, no_surat, id_pegawai, search) => {
-    return callApi('get', `${apiUrl}/surat/type?name=${name}&id=${id}&id_warga=${id_warga}&no_surat=${no_surat}&id_pegawai=${id_pegawai}&search=${search}`, Auth());
+export const GetSuratByType = (name, id, id_warga, no_surat, id_pegawai, search, page, limit) => {
+    return callApi('get', `${apiUrl}/surat/type?name=${name}&id=${id}&id_warga=${id_warga}&no_surat=${no_surat}&id_pegawai=${id_pegawai}&search=${search}&page=${page}&limit=${limit}`, Auth());
 };
   
 export const CreateSuratByType = (data) => {

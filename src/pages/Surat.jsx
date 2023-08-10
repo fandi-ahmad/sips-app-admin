@@ -86,9 +86,9 @@ const Surat = () => {
     try {
       // const response = await GetAllSurat(page, limit, namaSurat)
       // name, id, id_warga, no_surat, id_pegawai, search
-      const response = await GetSuratByType(namaSurat, '', '', '', '', search)
+      const response = await GetSuratByType(namaSurat, '', '', '', '', search, page, limit)
       setSuratList(response.data)
-      // setTotalPage(response.total_page)
+      setTotalPage(response.total_page)
     } catch (error) {
       console.log(error, '<-- error get surat');
     }
@@ -481,7 +481,7 @@ const Surat = () => {
   const descOpt = 'Demikian Keterangan ini dibuat dan berlaku selama 1 (Satu) bulan sejak dikeluarkan, apabila dikemudian hari terdapat kesalahan data, maka akan diadakan perbaikan sebagaimana mestinya.'
 
   useEffect(() => {
-    getAllData()
+    getAllData(suratName, search)
     getAllPegawai()
     inputSearchSize()
     getAllWarga()
@@ -505,9 +505,9 @@ const Surat = () => {
 
               <div className='flex items-center mr-2'>Filter Nama Surat:</div>
               <SelectInput value={suratName} name='nama surat' label=' ' onChange={handleInput}
-                onClick={() => suratName === 'all' ? getAllData() : getAllData(suratName) }
+                onClick={() => suratName === '' ? getAllData() : getAllData(suratName) }
               >
-                <option value="all">select All</option>
+                <option value="">select All</option>
                 <option value="surat keterangan berkelakuan baik">surat keterangan berkelakuan baik</option>
                 <option value="surat keterangan belum memiliki rumah">surat keterangan belum memiliki rumah</option>
                 <option value="surat keterangan belum bekerja">surat keterangan belum bekerja</option>
