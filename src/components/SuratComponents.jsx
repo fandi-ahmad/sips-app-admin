@@ -64,7 +64,7 @@ export const HeadPegawai = (props) => {
 const FormTitle = (props) => {
   return (
     <div className={`flex flex-row`} id={props.id}>
-      <div className="w-60 ml-10 text-left">{props.title}</div> : <span className={`pl-1 ${props.className}`}>{props.data}</span>
+      <div className="w-60 ml-10 text-left">{props.title}</div> : <span className={`pl-1 ${props.className || 'capitalize'}`}>{props.data}</span>
     </div>
   )
 }
@@ -83,7 +83,7 @@ export const BiodataWarga = (props) => {
       <FormTitle title='Agama' data={props.agama} />
       <FormTitle title='Alamat' data={props.alamat} />
       <FormTitle title='RT/RW' data={props.rtrw} />
-      <FormTitle title='maksud' data={props.maksud} id='maksudWarga' className='italic' />
+      <FormTitle title='maksud' data={props.maksud} id='maksudWarga' className='italic capitalize' />
     </div>
   )
 }
@@ -114,6 +114,22 @@ export const DomisiliUsaha = (props) => {
       <FormTitle title='Alamat Usaha' data={props.alamat} />
       <FormTitle title='Tahun Berdiri Usaha' data={props.tahun} />
       <FormTitle title='Bertempat di' data='Kelurahan Balaroa Kecamatan Palu Barat' />
+    </div>
+  )
+}
+
+export const DataKematian = (props) => {
+  return (
+    <div id={props.id}>
+      <p className={`text-justify mt-2`}>Bahwa nama tersebut di atas adalah Warga/Penduduk Kelurahan Balaroa Kecamatan Palu Barat Kota Palu yang telah meninggal dunia Pada: </p>
+      <FormTitle title='Hari/Tanggal' data={props.hari} />
+      <FormTitle title='Tempat Kematian' data={props.tempat} />
+      <FormTitle title='Sebab Kematian' data={props.sebab} />
+      <p className={`text-justify mt-2`}>Berdasarkan keterangan pelapor:</p>
+      <FormTitle title='nama' data={props.nama} />
+      <FormTitle title='nik' data={props.nik} />
+      <FormTitle title='alamat' data={props.alamat} />
+      <FormTitle title='Hubungan Dengan Alm/Almh' data={props.hubungan} />
     </div>
   )
 }

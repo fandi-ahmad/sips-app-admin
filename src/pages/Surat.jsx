@@ -6,8 +6,8 @@ import { GetPegawai } from '../api/pegawaiApi'     // api
 import { BaseModal, openModal, closeModal, ModalLoading } from '../components/BaseModal'
 import { BaseInput, InputIcon, SearchInput, SelectInput } from '../components/BaseInput'
 import { AlertError, AlertSuccess } from '../components/SweetAlert'
-import { getId, formatDateMounth, formatedNoSurat, formatedNoSuratDesc, printSurat, formatDateFromISO, formatToDot } from '../function/baseFunction'
-import { FooterTtd, BiodataWarga, HeadPegawai, KopSurat, BaseSurat, Paragraf, UsahaWarga, DomisiliUsaha } from '../components/SuratComponents'
+import { getId, formatDateMounth, formatedNoSurat, formatedNoSuratDesc, printSurat, formatDateFromISO, formatToDot, formatedDayMounth } from '../function/baseFunction'
+import { FooterTtd, BiodataWarga, HeadPegawai, KopSurat, BaseSurat, Paragraf, UsahaWarga, DomisiliUsaha, DataKematian } from '../components/SuratComponents'
 import { TableHeader, TablePaginate } from '../components/BaseTable'
 
 const Surat = () => {
@@ -136,6 +136,7 @@ const Surat = () => {
 
   const handleInput = (e) => {
     const { name, value } = e.target;
+    setPage(1)
     switch (name) {
       case 'nama surat': setSuratName(value); break;
       case 'nama': setNama(value); break;
@@ -171,6 +172,7 @@ const Surat = () => {
       case 'nik pelapor': setNikp(value); break;
       case 'alamat pelapor': setAlamatP(value); break;
       case 'search': setSearch(value); break;
+      case 'limit': setLimit(value); break;
       default: break;
     }
   };
@@ -299,6 +301,7 @@ const Surat = () => {
     getId('dataUsahaWarga').classList.add('hidden')
     getId('dataDomisiliUsaha').classList.add('hidden')
     getId('descSKPenghasilan').classList.add('hidden')
+    getId('dataKematian').classList.add('hidden')
     getId(id).classList.remove('hidden')
   }
 
@@ -320,6 +323,8 @@ const Surat = () => {
       hideShowDesc('dataDomisiliUsaha')
     } else if (nameCek === 'surat keterangan penghasilan') {
       hideShowDesc('descSKPenghasilan')
+    } else if (nameCek === 'surat keterangan kematian') {
+      hideShowDesc('dataKematian')
     }
 
     if (surat.pegawai.jabatan === 'lurah balaroa') {
@@ -332,9 +337,12 @@ const Surat = () => {
       getId('ttdJabatan').classList.add('capitalize')
     }
     openModal('suratPreview')
-    if (surat.id_surat_khusus) {
+    if (nameCek === 'surat keterangan usaha' || nameCek === 'surat keterangan domisili usaha' || nameCek === 'surat keterangan penghasilan') {
       const sUsaha = await GetSuratKetUsaha(nameCek, surat.id)
       setDataSurat(sUsaha.data[0])
+    } else if (nameCek === 'surat keterangan kematian') {
+      const sMati = await getSuratKematian(surat.id)
+      setDataSurat(sMati.data[0])
     } else {
       setDataSurat(surat)
     }
@@ -486,7 +494,7 @@ const Surat = () => {
     inputSearchSize()
     getAllWarga()
     checkPaginateBtn()
-  }, [page, totalPage])
+  }, [page, totalPage, limit])
 
   return (
     <>
@@ -499,6 +507,12 @@ const Surat = () => {
         <div className="card has-table">
           <div className="card-content text-black">
             <TableHeader title='daftar surat'>
+              <SelectInput className='mr-4' name='limit' label=' ' onChange={handleInput}>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </SelectInput>
               <InputIcon value={search} onChange={handleInput} name='search' onKeyUp={() => getAllData('', search)} className='mr-4'
                 icon={<i className="fa-solid fa-magnifying-glass"></i>} type='search' classLabel='hidden' placeholder='cari surat'
               />
@@ -525,6 +539,7 @@ const Surat = () => {
                   <th>Nama Surat</th>
                   <th>No Surat</th>
                   <th>Nama Warga</th>
+                  <th>NIK Warga</th>
                   <th>Nama Pegawai</th>
                   <th>Created</th>
                 </tr>
@@ -536,8 +551,9 @@ const Surat = () => {
                     <td data-label="Nama Surat"><small>{surat.nama_surat}</small></td>
                     <td data-label="No Surat"><small>{surat.no_surat}</small></td>
                     <td data-label="Nama Warga">{surat.warga.nama}</td>
+                    <td data-label="NIK Warga">{surat.warga.nik}</td>
                     <td data-label="Nama Pegawai">{surat.pegawai.nama}</td>
-                    <td data-label="Created">{formatDateFromISO(surat.createdAt)}</td>
+                    <td data-label="Created"><small>{formatDateFromISO(surat.createdAt)}</small></td>
                     <td className="actions-cell">
                       <div className="buttons right nowrap">
                         <button onClick={() => printSuratBySelected(surat)} className="button small text-white bg-yellow-500 border-1 border-yellow-500 hover:bg-yellow-600 hover:border-yellow-600">
@@ -694,6 +710,10 @@ const Surat = () => {
 
           <DomisiliUsaha id='dataDomisiliUsaha'
             nama={namaUsaha} jenis={jenisUsaha} alamat={alamatUsaha} tahun={tahunBerdiri}
+          />
+
+          <DataKematian id='dataKematian'
+            hari={formatedDayMounth(hariTgl)} tempat={tempatKematian} sebab={sebabKematian} nama={namaP} nik={nikP} alamat={alamatP} hubungan={hubungan}
           />
 
           <Paragraf id='descSKBaik'>

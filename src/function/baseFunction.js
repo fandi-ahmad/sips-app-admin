@@ -44,6 +44,24 @@ export const formatDateFromISO = (dateString) => {
   return hasil
 }
 
+export const formatedDayMounth = (tanggal) => {
+  const tanggalObj = new Date(tanggal);
+  
+  const namaBulan = [
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+  ];
+  
+  const namaHari = [ "Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu" ];
+  
+  const namaBulanStr = namaBulan[tanggalObj.getMonth()];
+  const namaHariStr = namaHari[tanggalObj.getDay()];
+  const tanggalFormat = `${namaHariStr}, ${tanggalObj.getDate()} ${namaBulanStr} ${tanggalObj.getFullYear()}`;
+  
+  return tanggalFormat;
+}
+
+
 export const formatedNoSurat = (inputString) => {
   const regex = /^\d{3}/; // Memilih tiga digit angka di bagian depan string
   return inputString.replace(regex, '- '); // Mengganti tiga digit angka dengan tanda "-"
