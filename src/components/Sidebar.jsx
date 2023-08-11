@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from "react-router-dom";
-// import { GetUser } from '../api/userApi'
+import { GetUser } from '../api/userApi'
 import { AlertConfirm } from './SweetAlert'
+import logoImage from '../assets/images/lambang_kota_palu.png'
 
 const Sidebar = () => {
 
@@ -12,16 +13,16 @@ const Sidebar = () => {
         document.getElementById(id).classList.add('active')
     }
 
-    // const checkToken = async () => {
-    //     try {
-    //         const response = await GetUser()
-    //         if (response.status == 403) {
-    //             localStorage.removeItem("user");
-    //             navigate('/login')
-    //         }
-    //     } catch (error) {
-    //     }
-    // }
+    const checkToken = async () => {
+        try {
+            const response = await GetUser()
+            if (response.status == 403) {
+                localStorage.removeItem("user");
+                navigate('/login')
+            }
+        } catch (error) {
+        }
+    }
 
     const logoutUser = () => {
         AlertConfirm({
@@ -55,7 +56,7 @@ const Sidebar = () => {
     }
 
     useEffect(() => {
-        // checkToken()
+        checkToken()
         checkActiveMenu()
     }, [])
 
@@ -64,6 +65,8 @@ const Sidebar = () => {
             setActivePage('dashboard')
         } else if (location.pathname === '/pegawai') {
             setActivePage('pegawai')
+        } else if (location.pathname === '/surat') {
+            setActivePage('surat')
         } else if (location.pathname === '/surat/berkelakuan-baik') {
             setActivePage('berkelakuan-baik')
         }
@@ -72,9 +75,10 @@ const Sidebar = () => {
     return (
         <aside className="aside is-placed-left is-expanded" style={{ minHeight: '100vh', maxHeight: 'fit-content', overflowY: 'auto' }}>
             <div className='h-5/6'>
-                <div className="aside-tools">
+                <div className="aside-tools py-4 h-28 flex flex-col gap-2">
+                    <img src={logoImage} alt="" className='w-10 mr-2' />
                     <div>
-                        <b className="font-black">Kel. Balaroa</b>
+                        <b className="font-black">Kelurahan Balaroa</b>
                     </div>
                 </div>
                 <div className="menu is-menu-main">
@@ -82,19 +86,25 @@ const Sidebar = () => {
                     <ul className="menu-list">
                         <li id='dashboard'>
                             <a onClick={() => navigate('/')}>
-                                <span className="icon"><i className="mdi mdi-desktop-mac"></i></span>
+                                <span className="icon"><i className="fa-solid fa-house"></i></span>
                                 <span className="menu-item-label">Dashboard</span>
                             </a>
                         </li>
                         <li id='pegawai'>
                             <a onClick={() => navigate('/pegawai')}>
-                                <span className="icon"><i className="mdi mdi-table"></i></span>
+                                <span className="icon"><i className="fa-solid fa-user"></i></span>
                                 <span className="menu-item-label">Pegawai</span>
                             </a>
                         </li>
-                        <li className="" id="dropdownMenu" onClick={dropdownMenu} >
+                        <li id='surat'>
+                            <a onClick={() => navigate('/surat')}>
+                                <span className="icon"><i className="fa-regular fa-file-lines"></i></span>
+                                <span className="menu-item-label">Semua Surat</span>
+                            </a>
+                        </li>
+                        {/* <li className="" id="dropdownMenu" onClick={dropdownMenu} >
                             <a className="dropdown">
-                                <span className="icon"><i className="mdi mdi-view-list"></i></span>
+                                <span className="icon"><i className="fa-solid fa-box-archive"></i></span>
                                 <span className="menu-item-label">Surat</span>
                                 <span className="icon"><i className="mdi mdi-plus" id="iconDropdown"></i></span>
                             </a>
@@ -125,7 +135,7 @@ const Sidebar = () => {
                                     </a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> */}
                     </ul>
                 </div>
             </div>
@@ -133,7 +143,7 @@ const Sidebar = () => {
                 <ul onClick={logoutUser} className="bg-slate-700 hover:bg-slate-600 cursor-pointer p-2 rounded-md w-full mx-2 text-center">
                     <li className="--set-active-profile-htm">
                         <a className='text-white'>
-                            <span className="icon"><i className="mdi mdi-logout"></i></span>
+                            <span className="icon"><i className="fa-solid fa-right-from-bracket"></i></span>
                             <span className="menu-item-label">Logout</span>
                         </a>
                     </li>

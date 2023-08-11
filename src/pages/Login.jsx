@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 // component
 import { InputIcon } from '../components/BaseInput'
 import { BasicButton } from '../components/BaseButton'
+import logoImage from '../assets/images/lambang_kota_palu.png'
 
 // api
 import { LoginUser } from '../api/userApi'
@@ -66,21 +67,20 @@ const Login = () => {
       <section className="section main-section w-screen h-screen bg-gray-300 text-black login-page">
         <div className="card w-1/3">
           <header className="card-header">
-            <p className="card-header-title flex justify-center">
-              <span>
-                <span className="icon"><i className="mdi mdi-lock"></i></span>
-                Login
-              </span>
+            <p className="card-header-title flex flex-col items-center">
+              <img src={logoImage} className='w-14' alt="" />
+              {/* <span className="icon"><i className="fa-solid fa-user"></i></span> */}
+              <span className='text-2xl'>Kelurahan Balaroa</span>
             </p>
           </header>
           <div className="card-content">
             <div className="field spaced">
-              <InputIcon name='username' onChange={handleInput} classLabel='font-bold' placeholder='username' icon={<i className="mdi mdi-account"></i>} />
+              <InputIcon name='username' onChange={handleInput} classLabel='font-bold' placeholder='username' icon={<i className="fa-solid fa-user"></i>} />
               <p className="help">Please enter your username</p>
             </div>
 
             <div className="field spaced">
-              <InputIcon name='password' onChange={handleInput} classLabel='font-bold' placeholder='password' type='password' icon={<i className="mdi mdi-asterisk"></i>} />
+              <InputIcon name='password' onChange={handleInput} classLabel='font-bold' placeholder='password' type='password' icon={<i className="fa-solid fa-key"></i>} />
               <p className="help">Please enter your password</p>
             </div>
 

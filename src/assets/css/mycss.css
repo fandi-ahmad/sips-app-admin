@@ -81,12 +81,13 @@
     left: 0px;
 }
 
-input[type="date"]::-webkit-calendar-picker-indicator {
+/* input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(1) hue-rotate(180deg);
-}
+} */
 
 a {
     border-radius: 4px !important;
+    color: white !important;
 }
 
 .text-tnr {

@@ -1,13 +1,13 @@
 import React, {useState, useEffect} from 'react'
 import Layout from '../../layouts/Layout'
 import { BasicButton } from '../../components/BaseButton'
-import { GetSuratByType, CreateSuratByType, GetWargaByNik, UpdateSuratByType } from '../../api/suratApi'   //api
+import { GetSuratByType, CreateSuratByType, GetWarga, UpdateSuratByType } from '../../api/suratApi'   //api
 import { GetPegawai } from '../../api/pegawaiApi'     // api
 import { BaseModal, openModal, closeModal, ModalLoading } from '../../components/BaseModal'
 import { BaseInput, SelectInput } from '../../components/BaseInput'
 import { AlertError, AlertSuccess } from '../../components/SweetAlert'
-import { getId } from '../../function/baseFunction'
-import logoImage from '../../assets/images/lambang_kota_palu.png'
+import { getId, formatDateMounth, formatedNoSurat, printSurat, formatDateFromISO } from '../../function/baseFunction'
+import { FooterTtd, BiodataWarga, HeadPegawai, KopSurat, BaseSurat, Paragraf } from '../../components/SuratComponents'
 
 
 const SKBaik = () => {
@@ -26,6 +26,7 @@ const SKBaik = () => {
   let suratName = 'surat keterangan berkelakuan baik'
   const [suratList, setSuratList] = useState([])
   const [pegawaiList, setPegawaiList] = useState([])
+  const [wargaList, setWargaList] = useState([])
 
   const [nama, setNama] = useState('')
   const [nik, setNik] = useState('')
@@ -49,10 +50,12 @@ const SKBaik = () => {
   const [nipPegawai, setNipPegawai] = useState('')
   const [jabatanPegawai, setJabatanPegawai] = useState('')
 
+  const [actText, setActText] = useState('')
+
  
   const getAllData = async () => {
     try {
-      const response = await GetSuratByType(suratName)
+      const response = await GetSuratByType(suratName, '', '', '')
       setSuratList(response.data)
     } catch (error) {
       console.log(error, '<-- error get data');
@@ -69,6 +72,10 @@ const SKBaik = () => {
   }
 
   const createNew = () => {
+    const select = getId('selectOpt')
+    select.click()
+    setActText('create')
+    resetData()
     openModal('upsert')
     getId('btnCreate').classList.remove('hidden')
     getId('btnUpdate').classList.add('hidden')
@@ -102,21 +109,10 @@ const SKBaik = () => {
 
       const response = await CreateSuratByType({
         nama_surat: 'surat keterangan berkelakuan baik',
-        nama: nama,
-        nik: nik,
-        jenis_kelamin: jk,
-        tempat_lahir: tempatLahir,
-        tanggal_lahir: tglLahir,
-        pekerjaan: pekerjaan,
-        kewarganegaraan: negara,
-        status: status,
-        agama: agama,
-        alamat: alamat,
-        rt_rw: rtrw,
-        no_surat: noSurat,
-        no_surat_number: noSuratNumber,
-        maksud: maksud,
-        id_pegawai: idPegawai
+        nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
+        tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
+        status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
+        no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai
       })
 
       closeModal('modal-loading')
@@ -124,7 +120,6 @@ const SKBaik = () => {
       getAllData()
     } catch (error) {
       AlertError()
-      console.log(error, '<-- error create surat');
     }
   }
 
@@ -151,7 +146,14 @@ const SKBaik = () => {
     setIdPegawai(surat.pegawai.id_pegawai)
   }
 
+  const resetData = () => {
+    setNama(''); setTempatLahir(''); setTglLahir(''); setJk(''); setPekerjaan('')
+    setNegara('indonesia'); setStatus(''); setAgama(''); setAlamat(''); setRtrw('')
+    setNoSurat(''); setNoSuratNumber(''); setMaksud(''); setIdPegawai(''); setNik('')
+  }
+
   const editSurat = (surat) => {
+    setActText('update')
     getId('btnCreate').classList.add('hidden')
     getId('btnUpdate').classList.remove('hidden')
     openModal('upsert')
@@ -165,22 +167,10 @@ const SKBaik = () => {
 
       const res = await UpdateSuratByType({
         // nama_surat: 'surat keterangan berkelakuan baik',
-        id: idSurat,
-        nama: nama,
-        nik: nik,
-        jenis_kelamin: jk,
-        tempat_lahir: tempatLahir,
-        tanggal_lahir: tglLahir,
-        pekerjaan: pekerjaan,
-        kewarganegaraan: negara,
-        status: status,
-        agama: agama,
-        alamat: alamat,
-        rt_rw: rtrw,
-        no_surat: noSurat,
-        no_surat_number: noSuratNumber,
-        maksud: maksud,
-        id_pegawai: idPegawai
+        id: idSurat, nama: nama, nik: nik, jenis_kelamin: jk, tempat_lahir: tempatLahir,
+        tanggal_lahir: tglLahir, pekerjaan: pekerjaan, kewarganegaraan: negara,
+        status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat,
+        no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai
       })
 
       closeModal('modal-loading')
@@ -188,14 +178,24 @@ const SKBaik = () => {
       getAllData()
     } catch (error) {
       AlertError()
-      console.log(error, '<-- error update');
     }
   }
 
   const checkNikWarga = async () => {
     try {
-      const response = await GetWargaByNik(nik)
+      getId('selectOpt').classList.remove('hidden')
+      const response = await GetWarga(nik, '', '', '')
       response.total_data >= 1 ? getId('nikIcon').classList.remove('hidden') : getId('nikIcon').classList.add('hidden')
+      setWargaList(response.data)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const getAllWarga = async () => {
+    try {
+      const response = await GetWarga(nik, '', '', '')
+      setWargaList(response.data)
     } catch (error) {
       console.log(error);
     }
@@ -206,39 +206,40 @@ const SKBaik = () => {
     setDataSurat(surat)
   }
 
+  const inputSearchSize = () => {
+    const inputNik = getId('nik').offsetWidth
+    getId('selectOpt').style.width = inputNik+'px'
+  }
 
-  const printSurat = () => {
-    const printPage = getId('printArea').innerHTML;
-    const printContent = document.createElement('div');
-    printContent.innerHTML = printPage;
-  
-    // Sembunyikan elemen-elemen yang tidak perlu dicetak
-    // Anda bisa menyesuaikan elemen-elemen ini sesuai dengan halaman Anda
-    const elementsToHide = document.querySelectorAll('.header, .sidebar');
-    elementsToHide.forEach(element => {
-      element.style.display = 'none';
-    });
-  
-    // Tampilkan elemen-elemen yang ingin dicetak
-    document.body.appendChild(printContent);
-  
-    // Cetak halaman
-    window.print();
-  
-    // Hapus elemen printContent setelah mencetak selesai
-    document.body.removeChild(printContent);
-  
-    // Kembalikan tampilan elemen yang disembunyikan
-    elementsToHide.forEach(element => {
-      element.style.display = '';
-    });
-  };
-  
+  const getWargaByNik = async (nikWarga) => {
+    try {
+      getId('selectOpt').classList.add('hidden')
+      const resWarga = await GetWarga('', '', '', nikWarga)
+      const w = resWarga.data[0]    // <== data warga
+
+      setNama(w.nama)
+      setNik(w.nik)
+      setTempatLahir(w.tempat_lahir)
+      setTglLahir(w.tanggal_lahir)
+      setJk(w.jenis_kelamin)
+      setPekerjaan(w.pekerjaan)
+      setNegara(w.kewarganegaraan)
+      setStatus(w.status)
+      setAgama(w.agama)
+      setAlamat(w.alamat)
+      setRtrw(w.rt_rw)
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
 
   useEffect(() => {
     getAllData()
     getAllPegawai()
+    inputSearchSize()
+    getAllWarga()
   }, [])
 
   return (
@@ -265,8 +266,8 @@ const SKBaik = () => {
                    <td className="image-cell">{index+1}</td>
                     <td data-label="No Surat"><small>{surat.no_surat}</small></td>
                     <td data-label="Nama Warga">{surat.warga.nama}</td>
-                    <td data-label="TTL">{surat.warga.tempat_lahir}, {surat.warga.tanggal_lahir}</td>
-                    <td data-label="Created"><small>{surat.createdAt}</small></td>
+                    <td data-label="TTL">{surat.warga.tempat_lahir}, {formatDateMounth(surat.warga.tanggal_lahir)}</td>
+                    <td data-label="Created">{formatDateFromISO(surat.createdAt)}</td>
                     <td className="actions-cell">
                       <div className="buttons right nowrap">
                         <button onClick={() => printSuratBySelected(surat)} className="button small blue">
@@ -289,9 +290,17 @@ const SKBaik = () => {
       </Layout>
 
       {/* ===== upsert modal ===== */}
-      <BaseModal id='upsert' title={`create surat`} classSize='w-screen'>
+      <BaseModal onClick={() => getId('selectOpt').classList.add('hidden')} id='upsert' title={`${actText} surat`} classSize='w-screen'>
         <div className='grid grid-cols-4 gap-4'>
-          <BaseInput value={nik} onChange={handleInput} onKeyUp={checkNikWarga} name='NIK' label={<>NIK <span className="mdi mdi-circle text-red-500 hidden" id='nikIcon'></span></>} />
+          <BaseInput autoComplete='off' id='nik' value={nik} onChange={handleInput} onKeyUp={checkNikWarga} name='NIK' label={<>NIK <span className="mdi mdi-circle text-red-500 hidden" id='nikIcon'></span></>} />
+          <div className='mt-16 border border-gray-800' style={{ position: 'absolute' }}>
+            <select id="selectOpt" className='bg-white overflow-hidden hidden overflow-x-auto cursor-pointer' size={'5'}>
+              {wargaList.map((warga) => (
+                <option key={warga.id} value={warga.nik} onClick={() => getWargaByNik(warga.nik)}>{warga.nama} - {warga.nik}</option>
+              ))}
+            </select>
+          </div>
+
           <BaseInput value={nama} onChange={handleInput} name='nama' />
           <BaseInput value={tempatLahir} onChange={handleInput} name='tempat lahir' />
           <BaseInput value={tglLahir} onChange={handleInput} name='tanggal lahir' type='date' />
@@ -322,110 +331,29 @@ const SKBaik = () => {
       </BaseModal>
 
       <BaseModal id='suratPreview' classSize='w-screen min-h-screen'>
-        <div id="printArea">
-          <div id="letterPreview" className="preview-print">
-            <div className="print-preview text-center text-tnr" style={{ width: '100%', height: 'fit-content',}}>
-              <div className="flex flex-row gap-4 justify-center items-center">
-                <div style={{ width: '80px' }}>
-                  <img src={logoImage} alt="" style={{ width: '100%' }} />
-                </div>
-                <div>
-                  <h1 className="text-xl leading-none font-medium">PEMERINTAH KOTA PALU</h1>
-                  <p className="text-2xl leading-none" style={{ fontWeight: '900' }}>KECAMATAN PALU BARAT</p>
-                  <p className="text-2xl leading-none" style={{ fontWeight: '900' }}>KELURAHAN BALAROA</p>
-                  <p className="font-bold leading-none">JL. Yambaere No. 05</p>
-                </div>
-              </div>
+        <BaseSurat>
+          <KopSurat surat='surat keterangan berkelakuan baik' no={noSurat} />
+          <HeadPegawai nama={namaPegawai} jabatan={jabatanPegawai} />
 
-              <hr className="my-2" style={{ border: '1px solid black' }} />
+          <BiodataWarga
+            nama={nama} nik={nik} jk={jk} ttl={tempatLahir + ', ' + formatDateMounth(tglLahir)} kerja={pekerjaan}
+            negara={negara} status={status} agama={agama} alamat={alamat} rtrw={rtrw} maksud={maksud}
+          />
 
-              <div className="mb-2">
-                <u><b>SURAT KETERANGAN BERKELAKUAN BAIK</b></u>
-                <p className="leading-none">NOMOR: {noSurat}</p>
-              </div>
+          <Paragraf>
+            Sepanjang pengamatan kami serta pengetahuan kami, hingga saat ini dikeluarkan surat 
+            keterangan ini, Oknum tersebut belum pernah tersangkut dalam perkara pidana kriminal, 
+            serta berkelakuan baik terhadap masyarakat sesuai dengan Surat Pengantar RT/RW 
+            Nomor: {formatedNoSurat(noSurat)}, tanggal {date} {monthName} {year}.
+          </Paragraf>
 
-              <div className="my-table mb-2">
-                <div className="text-left">Yang bertanda tangan dibawah ini:</div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Nama</div> : {namaPegawai}
-                  {/* <div>: <span id="namaPegawai"></span></div> */}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Jabatan</div> : {jabatanPegawai}
-                  {/* <div>: <span id="jabatanPegawai"></span> </div> */}
-                </div>
-              </div>
+          <Paragraf>Demikian Surat Keterangan ini dibuat untuk dipergunakan seperlunya.</Paragraf>
+          <FooterTtd nama={namaPegawai} jabatan={jabatanPegawai} nip={nipPegawai} />
+        </BaseSurat>
 
-              <div className="my-table mb-2">
-                <div className="text-left">Dengan ini menerangkan bahwa:</div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Nama</div> : {nama}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Jenis kelamin</div> : {jk === 'l' ? 'laki-laki' : 'perempuan'}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Tempat/Tgl. lahir</div>: {tempatLahir}, {tglLahir}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Pekerjaan</div> : {pekerjaan}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Kewarganegaraan</div> : {negara}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Status</div> : {status}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Agama</div> : {agama}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Alamat</div> : {alamat}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">NIK</div> : {nik}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">RT/RW</div> : {rtrw}
-                </div>
-                <div className="flex flex-row">
-                  <div className="w-60 ml-10 text-left">Maksud</div> : {maksud}
-                </div>
-              </div>
-
-              <p className="text-justify">
-                Sepanjang pengamatan kami serta pengetahuan kami, hingga saat ini dikeluarkan surat 
-                keterangan ini, Oknum tersebut belum pernah tersangkut dalam perkara pidana kriminal, 
-                serta berkelakuan baik terhadap masyarakat sesuai dengan Surat Pengantar RT/RW 
-                Nomor: {noSurat}, tanggal {date} {monthName} {year}.
-              </p>
-            
-              <p className="text-justify indent-10">
-                Demikian Surat Keterangan ini dibuat untuk dipergunakan seperlunya.
-              </p>
-
-              <div className="flex justify-end">
-                <div className="ttd">
-                  <div className="mb-20">
-                    <div className="my-4">Palu, {date} {monthName} {year} </div>
-                    <div>An. LURAH BALAROA</div>
-                    <div>{jabatanPegawai}</div>
-                    {/* <div id="jabatanPegawaiTtd">Kasi Pemberdayaan Masyarakat</div> */}
-                    {/* <!-- <div>Dan Kesejahteraan Sosial</div> --> */}
-                  </div>
-
-                  <div className="text-md"><u className="uppercase">{namaPegawai}</u></div>
-                  <div>NIP: {nipPegawai}</div>
-                </div>
-              </div>
-            
-            </div>
-
-          </div>
-        </div>
         <div className="modal-action pt-4">
           <BasicButton onClick={() => closeModal('suratPreview')} title='Close' className='bg-gray-500 text-white' />
-          <BasicButton onClick={printSurat} title='Print' />
+          <BasicButton onClick={() => printSurat('printArea')} title='Print' />
         </div>
       </BaseModal>
 
