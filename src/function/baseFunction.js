@@ -37,7 +37,7 @@ export const formatDateFromISO = (dateString) => {
     "Juli", "Agustus", "September", "Oktober", "November", "Desember"
   ];
 
-  const tanggal = tanggalObjek.getUTCDate();
+  const tanggal = tanggalObjek.getUTCDate().toString().padStart(2, '0');
   const bulan = namaBulan[tanggalObjek.getUTCMonth()];
   const tahun = tanggalObjek.getUTCFullYear();
   const hasil = `${tanggal} ${bulan} ${tahun}`;

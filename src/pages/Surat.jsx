@@ -356,7 +356,7 @@ const Surat = () => {
     namecek === 'surat keterangan penghasilan' ? removeAdd('formDataPenghasilan', 'remove') : removeAdd('formDataPenghasilan', 'add')
     namecek === 'surat keterangan kematian' ? removeAdd('formDataKematian', 'remove') : removeAdd('formDataKematian', 'add')
 
-    getId('noSuratNumber').setAttribute('disabled', 'on')
+    // getId('noSuratNumber').setAttribute('disabled', 'on')
     setActText('update')
     getId('btnCreate').classList.add('hidden')
     getId('btnUpdate').classList.remove('hidden')
@@ -625,7 +625,15 @@ const Surat = () => {
           <BaseInput value={pekerjaan} onChange={handleInput} name='pekerjaan' />
           <BaseInput value={negara} onChange={handleInput} name='kewarganegaraan' />
           <BaseInput value={status} onChange={handleInput} name='status' />
-          <BaseInput value={agama} onChange={handleInput} name='agama' />
+          {/* <BaseInput value={agama} onChange={handleInput} name='agama' /> */}
+          <SelectInput value={agama} onChange={handleInput} name='agama'>
+            <option value="islam">Islam</option>
+            <option value="kristen">Kristen</option>
+            <option value="katolik">Katolik</option>
+            <option value="hindu">Hindu</option>
+            <option value="buddha">Buddha</option>
+            <option value="konghucu">Konghucu</option>
+          </SelectInput>
           <BaseInput value={alamat} onChange={handleInput} name='alamat' />
           <BaseInput value={rtrw} onChange={handleInput} name='RT/RW' />
           <BaseInput value={maksud} onChange={handleInput} name='maksud' />
