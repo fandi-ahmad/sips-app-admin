@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Card = (props) => {
+export const Card = (props) => {
     return (
         <div className="card">
             <div className="card-content">
@@ -18,4 +18,17 @@ const Card = (props) => {
     )
 }
 
-export default Card
+export const CardSurat = (props) => {
+    return (
+        <div className="card">
+            <div className="card-content">
+                <div className="flex items-center justify-center">
+                    <div className="widget-label text-center">
+                        <p className='capitalize mb-2'>{props.title || 'Title'}</p>
+                        <h1>{props.value || '0'}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
