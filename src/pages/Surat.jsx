@@ -635,7 +635,7 @@ const Surat = () => {
             <option value="konghucu">Konghucu</option>
           </SelectInput>
           <BaseInput value={alamat} onChange={handleInput} name='alamat' />
-          <BaseInput value={rtrw} onChange={handleInput} name='RT/RW' />
+          <BaseInput value={rtrw} onChange={handleInput} name='RT/RW' smallText='format: 001/001' />
           <BaseInput value={maksud} onChange={handleInput} name='maksud' />
           <BaseInput value={noSuratNumber} onChange={handleInput} name='no surat number' idInput='noSuratNumber' />
           <BaseInput value={noSurat} onChange={handleInput} name='no surat' disabled='on' />

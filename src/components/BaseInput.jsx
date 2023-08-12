@@ -42,6 +42,8 @@ export const BaseInput = (props) => {
                 disabled={props.disabled} onKeyUp={props.onKeyUp} autoComplete={props.autoComplete} id={props.idInput}
                 className='block w-full mt-1 text-sm bg-transparent p-2 border border-gray-600 rounded-md form-input disabled:bg-slate-300'
             />
+            {/* <small className={props.classSmallText || 'hidden'}>{}</small> */}
+            <small>{props.smallText}</small>
         </label>
     )
 }
