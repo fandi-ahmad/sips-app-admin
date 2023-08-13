@@ -44,10 +44,11 @@ export const Pegawai = () => {
 
   const handleInput = (e) => {
     const { name, value } = e.target;
+    const numberValue = value.replace(/[^0-9. ]/g, '');
     switch (name) {
       case 'nama': setNama(value); break;
       case 'jabatan': setJabatan(value); break;
-      case 'nip': setNip(value); break;
+      case 'nip': setNip(numberValue); break;
       default: break;
     }
   };
