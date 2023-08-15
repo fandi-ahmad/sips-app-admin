@@ -72,6 +72,8 @@ const Surat = () => {
   const [tahunBerdiri, setTahunBerdiri] = useState('')
   const [bertempat, setBertempat] = useState('')
   const [penghasilan, setPenghasilan] = useState('')
+  const [desa, setDesa] = useState('')
+  const [kecamatan, setKecamatan] = useState('')
 
   // data kematian
   const [sebabKematian, setSebabKematian] = useState('')
@@ -167,6 +169,8 @@ const Surat = () => {
       case 'tahun berdiri': setTahunBerdiri(value); break;
       case 'bertempat': setBertempat(value); break;
       case 'penghasilan': setPenghasilan(value); break;
+      case 'desa': setDesa(value); break;
+      case 'kecamatan': setKecamatan(value); break;
       case 'sebab kematian': setSebabKematian(value); break;
       case 'tempat kematian': setTempatKematian(value); break;
       case 'hari tanggal': setHariTgl(value); break;
@@ -205,7 +209,7 @@ const Surat = () => {
             no_surat_number: noSuratNumber, maksud: maksud, no_surat_pengantar: noSuratPengantar, id_pegawai: idPegawai,
             nama_usaha: namaUsaha, jenis_usaha: jenisUsaha, npwp: npwp, no_izin_usaha: noIzinUsaha,
             no_fiskal: noFiskal, luas_tempat_usaha: luasTempatUsaha, alamat_usaha: alamatUsaha,
-            tahun_berdiri: tahunBerdiri, bertempat: bertempat, penghasilan: penghasilan
+            tahun_berdiri: tahunBerdiri, bertempat: bertempat, penghasilan: penghasilan, desa: desa, kecamatan: kecamatan
           })
         } else if (suratName === 'surat keterangan kematian') {
           await CreateSuratKematian({
@@ -271,6 +275,8 @@ const Surat = () => {
       setAlamatUsaha(usaha.alamat_usaha)
       setTahunBerdiri(usaha.tahun_berdiri)
       setPenghasilan(usaha.penghasilan)
+      setDesa(usaha.desa)
+      setKecamatan(usaha.kecamatan)
     }
     if (surat.ket_kematian) {
       const mati = surat.ket_kematian
@@ -349,6 +355,14 @@ const Surat = () => {
     } else {
       setDataSurat(surat)
     }
+
+    if (nameCek === 'surat keterangan domisili usaha') {
+      getId('desaWarga').classList.remove('hidden')
+      getId('kecamatanWarga').classList.remove('hidden')
+    } else {
+      getId('desaWarga').classList.add('hidden')
+      getId('kecamatanWarga').classList.add('hidden')
+    }
   }
 
   const editSurat = async (surat) => {
@@ -387,7 +401,7 @@ const Surat = () => {
           status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat, no_surat_pengantar: noSuratPengantar,
           no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai,
           nama_usaha: namaUsaha, jenis_usaha: jenisUsaha, npwp: npwp, no_izin_usaha: noIzinUsaha, no_fiskal: noFiskal,
-          luas_tempat_usaha: luasTempatUsaha, alamat_usaha: alamatUsaha, tahun_berdiri: tahunBerdiri, penghasilan: penghasilan
+          luas_tempat_usaha: luasTempatUsaha, alamat_usaha: alamatUsaha, tahun_berdiri: tahunBerdiri, penghasilan: penghasilan, desa: desa, kecamatan: kecamatan
         })
       } else if (suratName === 'surat keterangan kematian') {
         await UpdateSuratKematian({
@@ -669,6 +683,8 @@ const Surat = () => {
         <div className='mt-8 hidden' id='formDataDomUsaha'>
           <div className='text-xl mb-2 font-bold'>Data Domisili Usaha</div>
           <div className='grid grid-cols-4 gap-4'>
+            <BaseInput value={desa} onChange={handleInput} name='desa' />
+            <BaseInput value={kecamatan} onChange={handleInput} name='kecamatan' />
             <BaseInput value={namaUsaha} onChange={handleInput} name='nama usaha' />
             <BaseInput value={jenisUsaha} onChange={handleInput} name='jenis usaha' />
             <BaseInput value={alamatUsaha} onChange={handleInput} name='alamat usaha' />
@@ -715,7 +731,7 @@ const Surat = () => {
 
           <BiodataWarga
             nama={nama} nik={nik} jk={jk} ttl={tempatLahir + ', ' + formatDateMounth(tglLahir)} kerja={pekerjaan}
-            negara={negara} status={status} agama={agama} alamat={alamat} rtrw={rtrw} maksud={maksud}
+            negara={negara} status={status} agama={agama} alamat={alamat} rtrw={rtrw} maksud={maksud} desa={desa} kecamatan={kecamatan}
           />
 
           <UsahaWarga id='dataUsahaWarga'
