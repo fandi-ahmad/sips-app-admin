@@ -136,6 +136,9 @@ const Surat = () => {
 
   const handleInput = (e) => {
     const { name, value } = e.target;
+    const numberValue = value.replace(/[^0-9.]/g, '');
+    const rtrwValue = value.replace(/[^0-9/]/g, '');
+
     setPage(1)
     switch (name) {
       case 'nama surat': setSuratName(value); break;
@@ -149,9 +152,9 @@ const Surat = () => {
       case 'status': setStatus(value); break;
       case 'agama': setAgama(value); break;
       case 'alamat': setAlamat(value); break;
-      case 'RT/RW': setRtrw(value); break;
-      case 'no surat number': setNoSuratNumber(value); setNoSurat(`${suratKey}/${value}/BLR/${monthRomawi}/${year}`); break;
-      case 'no surat pengantar': setNoSuratPengantar(value); break;
+      case 'RT/RW': setRtrw(rtrwValue); break;
+      case 'no surat number': setNoSuratNumber(numberValue); setNoSurat(`${suratKey}/${numberValue}/BLR/${monthRomawi}/${year}`); break;
+      case 'no surat pengantar': setNoSuratPengantar(numberValue); break;
       case 'maksud': setMaksud(value); break;
       case 'pegawai': setIdPegawai(parseInt(value)); break;
       case 'nama usaha': setNamaUsaha(value); break;
@@ -488,6 +491,11 @@ const Surat = () => {
 
   const descOpt = 'Demikian Keterangan ini dibuat dan berlaku selama 1 (Satu) bulan sejak dikeluarkan, apabila dikemudian hari terdapat kesalahan data, maka akan diadakan perbaikan sebagaimana mestinya.'
 
+  const closeModalSuratName = () => {
+    closeModal('createSuratName')
+    setSuratName('')
+  }
+
   useEffect(() => {
     getAllData(suratName, search)
     getAllPegawai()
@@ -599,7 +607,7 @@ const Surat = () => {
           <option value="surat keterangan kematian">surat keterangan kematian</option>
         </SelectInput>
         <div className="modal-action pt-4">
-          <BasicButton onClick={() => closeModal('createSuratName')} title='Close' className='bg-gray-500 text-white' />
+          <BasicButton onClick={closeModalSuratName} title='Close' className='bg-gray-500 text-white' />
           <BasicButton onClick={nextCreateSurat} title='Next'/>
         </div>
       </BaseModal>
@@ -625,7 +633,6 @@ const Surat = () => {
           <BaseInput value={pekerjaan} onChange={handleInput} name='pekerjaan' />
           <BaseInput value={negara} onChange={handleInput} name='kewarganegaraan' />
           <BaseInput value={status} onChange={handleInput} name='status' />
-          {/* <BaseInput value={agama} onChange={handleInput} name='agama' /> */}
           <SelectInput value={agama} onChange={handleInput} name='agama'>
             <option value="islam">Islam</option>
             <option value="kristen">Kristen</option>
@@ -635,7 +642,7 @@ const Surat = () => {
             <option value="konghucu">Konghucu</option>
           </SelectInput>
           <BaseInput value={alamat} onChange={handleInput} name='alamat' />
-          <BaseInput value={rtrw} onChange={handleInput} name='RT/RW' />
+          <BaseInput value={rtrw} onChange={handleInput} name='RT/RW' maxLength='7' smallText='format: 001/001' />
           <BaseInput value={maksud} onChange={handleInput} name='maksud' />
           <BaseInput value={noSuratNumber} onChange={handleInput} name='no surat number' idInput='noSuratNumber' />
           <BaseInput value={noSurat} onChange={handleInput} name='no surat' disabled='on' />
