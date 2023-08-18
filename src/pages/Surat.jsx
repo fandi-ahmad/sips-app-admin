@@ -370,7 +370,6 @@ const Surat = () => {
     if (namecek === 'surat keterangan usaha' || namecek === 'surat keterangan domisili usaha' || suratName === 'surat keterangan penghasilan') {
       const sUsaha = await GetSuratKetUsaha(surat.nama_surat, surat.id)
       setDataSurat(sUsaha.data[0])
-      console.log(sUsaha, '<-- surat ket usaha');
     } else if (namecek === 'surat keterangan kematian') {
       const sMati = await getSuratKematian(surat.id)
       setDataSurat(sMati.data[0])
