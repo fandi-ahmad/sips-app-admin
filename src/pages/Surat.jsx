@@ -1,29 +1,23 @@
 import React, {useState, useEffect} from 'react'
 import Layout from '../layouts/Layout'
 import { BasicButton } from '../components/BaseButton'
-import { GetSuratByType, CreateSuratByType, GetWarga, UpdateSuratByType, GetAllSurat, GetWargaById, CreateSuratKetUsaha, GetSuratKetUsaha, UpdateSuratKetUsaha, CreateSuratKematian, getSuratKematian, UpdateSuratKematian } from '../api/suratApi'   //api
+import { GetSuratByType, CreateSuratByType, GetWarga, UpdateSuratByType, CreateSuratKetUsaha, GetSuratKetUsaha, UpdateSuratKetUsaha, CreateSuratKematian, getSuratKematian, UpdateSuratKematian } from '../api/suratApi'   //api
 import { GetPegawai } from '../api/pegawaiApi'     // api
 import { BaseModal, openModal, closeModal, ModalLoading } from '../components/BaseModal'
-import { BaseInput, InputIcon, SearchInput, SelectInput } from '../components/BaseInput'
+import { BaseInput, InputIcon, SelectInput } from '../components/BaseInput'
 import { AlertError, AlertSuccess } from '../components/SweetAlert'
-import { getId, formatDateMounth, formatedNoSurat, formatedNoSuratDesc, printSurat, formatDateFromISO, formatToDot, formatedDayMounth } from '../function/baseFunction'
+import { getId, formatDateMounth, printSurat, formatDateFromISO, formatToDot, formatedDayMounth } from '../function/baseFunction'
 import { FooterTtd, BiodataWarga, HeadPegawai, KopSurat, BaseSurat, Paragraf, UsahaWarga, DomisiliUsaha, DataKematian } from '../components/SuratComponents'
 import { TableHeader, TablePaginate } from '../components/BaseTable'
 
 const Surat = () => {
   const today = new Date();
-  const date = today.getDate();
   const month = today.getMonth();
   const year = today.getFullYear();
-  const monthNames = [ "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-  ];
   const monthRomawis = [ "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII" ];
-  const monthName = monthNames[month];
   const monthRomawi = monthRomawis[month]
-  // const suratKey = 200
 
-  const [suratKey, setSuratKey] = useState(200.1)
+  const [suratKey, setSuratKey] = useState('')
   const [suratList, setSuratList] = useState([])
   const [pegawaiList, setPegawaiList] = useState([])
   const [wargaList, setWargaList] = useState([])
@@ -121,10 +115,10 @@ const Surat = () => {
     suratName === 'surat keterangan penghasilan' ? removeAdd('formDataPenghasilan', 'remove') : removeAdd('formDataPenghasilan', 'add')
     suratName === 'surat keterangan kematian' ? removeAdd('formDataKematian', 'remove') : removeAdd('formDataKematian', 'add')
 
-    suratName === 'surat keterangan berkelakuan baik' ? setSuratKey(301) : null
-    suratName === 'surat keterangan belum memiliki rumah' ? setSuratKey(460) : null
+    suratName === 'surat keterangan berkelakuan baik' ? setSuratKey('301') : null
+    suratName === 'surat keterangan belum memiliki rumah' ? setSuratKey('460') : null
     suratName === 'surat keterangan belum bekerja' || suratName === 'surat keterangan belum menikah' ? setSuratKey('474.5') : null
-    suratName === 'surat keterangan usaha' || suratName === 'surat keterangan domisili usaha' ? setSuratKey(517) : null
+    suratName === 'surat keterangan usaha' || suratName === 'surat keterangan domisili usaha' ? setSuratKey('517') : null
     suratName === 'surat keterangan penghasilan' ? setSuratKey('010') : null
     suratName === 'surat keterangan kematian' ? setSuratKey('474.3') : null
   }
@@ -193,11 +187,6 @@ const Surat = () => {
       ) {
         AlertError('input tidak boleh kosong')
       } else {
-        // const checkNoSurat = await GetSuratByType('', '', '', noSurat, '', '')
-        // if (checkNoSurat.status !== 404) {
-        //   AlertError('nomor surat sudah terdaftar')
-        // } else {
-        // }
         closeModal('upsert')
         openModal('modal-loading')
 
@@ -381,6 +370,7 @@ const Surat = () => {
     if (namecek === 'surat keterangan usaha' || namecek === 'surat keterangan domisili usaha' || suratName === 'surat keterangan penghasilan') {
       const sUsaha = await GetSuratKetUsaha(surat.nama_surat, surat.id)
       setDataSurat(sUsaha.data[0])
+      console.log(sUsaha, '<-- surat ket usaha');
     } else if (namecek === 'surat keterangan kematian') {
       const sMati = await getSuratKematian(surat.id)
       setDataSurat(sMati.data[0])
@@ -505,8 +495,8 @@ const Surat = () => {
 
   const descOpt = 'Demikian Keterangan ini dibuat dan berlaku selama 1 (Satu) bulan sejak dikeluarkan, apabila dikemudian hari terdapat kesalahan data, maka akan diadakan perbaikan sebagaimana mestinya.'
 
-  const closeModalSuratName = () => {
-    closeModal('createSuratName')
+  const closeThisModal = (idModal) => {
+    closeModal(idModal)
     setSuratName('')
   }
 
@@ -621,7 +611,7 @@ const Surat = () => {
           <option value="surat keterangan kematian">surat keterangan kematian</option>
         </SelectInput>
         <div className="modal-action pt-4">
-          <BasicButton onClick={closeModalSuratName} title='Close' className='bg-gray-500 text-white' />
+          <BasicButton onClick={() => closeThisModal('createSuratName')} title='Close' className='bg-gray-500 text-white' />
           <BasicButton onClick={nextCreateSurat} title='Next'/>
         </div>
       </BaseModal>

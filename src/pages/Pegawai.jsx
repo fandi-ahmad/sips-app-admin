@@ -20,7 +20,6 @@ export const Pegawai = () => {
 
   const [page, setPage] = useState(1)
   const [totalPage, setTotalPage] = useState(1)
-  const [limit, setLimit] = useState(1000)
 
   const createNew = () => {
     openModal('upsert')
@@ -34,7 +33,7 @@ export const Pegawai = () => {
 
   const getAllData = async () => {
     try {
-      const response = await GetPegawai(page, limit)
+      const response = await GetPegawai(page, 1000)
       setPegawaiList(response.data)
       setTotalPage(response.total_page)
     } catch (error) {
@@ -64,7 +63,7 @@ export const Pegawai = () => {
       } else {
         closeModal('upsert')
         openModal('modal-loading')
-        const response = await CreatePegawai({
+        await CreatePegawai({
           nama: nama,
           jabatan: jabatan,
           nip: nip,
@@ -93,7 +92,7 @@ export const Pegawai = () => {
     try {
       const suratByIdPegawai = await GetSuratByType('', '', '', '', id, '')
       if (suratByIdPegawai.status === 'failed') {
-        const res = await DeletePegawai(id)
+        await DeletePegawai(id)
         AlertSuccess('Delete Successfully')
         getAllData()
       } else {
@@ -124,7 +123,7 @@ export const Pegawai = () => {
         closeModal('upsert')
         openModal('modal-loading')
 
-        const res = await UpdatePegawai({
+        await UpdatePegawai({
           id: idPegawai,
           nama: nama,
           jabatan: jabatan,
