@@ -286,7 +286,7 @@ const Surat = () => {
     setNoSurat(''); setNoSuratNumber(''); setMaksud(''); setIdPegawai(''); setNik(''); setSuratName('')
 
     setNamaUsaha(''); setJenisUsaha(''); setNpwp(''); setNoIzinUsaha(''); setNoFiskal('')
-    setLuasTempatUsaha(''); setAlamatUsaha(''); setTahunBerdiri(''); setBertempat('')
+    setLuasTempatUsaha(''); setAlamatUsaha(''); setTahunBerdiri(''); setBertempat(''); setDesa(''); setKecamatan('')
 
     setSebabKematian(''); setTempatKematian(''); setHariTgl(''); setHubungan(''); setNamap(''); setNikp(''); setAlamatP('')
   }
@@ -672,7 +672,7 @@ const Surat = () => {
         <div className='mt-8 hidden' id='formDataDomUsaha'>
           <div className='text-xl mb-2 font-bold'>Data Domisili Usaha</div>
           <div className='grid grid-cols-4 gap-4'>
-            <BaseInput value={desa} onChange={handleInput} name='desa' />
+            <BaseInput value={desa} onChange={handleInput} name='desa' label='kelurahan/desa' />
             <BaseInput value={kecamatan} onChange={handleInput} name='kecamatan' />
             <BaseInput value={namaUsaha} onChange={handleInput} name='nama usaha' />
             <BaseInput value={jenisUsaha} onChange={handleInput} name='jenis usaha' />

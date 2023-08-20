@@ -82,7 +82,7 @@ export const BiodataWarga = (props) => {
       <FormTitle title='Status' data={props.status} />
       <FormTitle title='Agama' data={props.agama} />
       <FormTitle title='Alamat' data={props.alamat} />
-      <FormTitle title='Desa' data={props.desa} id='desaWarga' />
+      <FormTitle title='Kelurahan/Desa' data={props.desa} id='desaWarga' />
       <FormTitle title='Kecamatan' data={props.kecamatan} id='kecamatanWarga' />
       <FormTitle title='RT/RW' data={props.rtrw} />
       <FormTitle title='maksud' data={props.maksud} id='maksudWarga' className='italic capitalize' />
