@@ -9,7 +9,7 @@ import Surat from '../pages/Surat';
 export const RoutesTemplate = () => {
 
     useEffect(() => {
-        document.title = 'WPM'
+        document.title = 'Kel. Balaroa'
     }, [])
 
     return (
