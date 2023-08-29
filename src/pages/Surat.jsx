@@ -109,18 +109,22 @@ const Surat = () => {
       openModal('upsert')
     }
 
-    const removeAdd = (id, action) => getId(id).classList[action]('hidden')
-    suratName === 'surat keterangan usaha' ? removeAdd('formDataUsaha', 'remove') : removeAdd('formDataUsaha', 'add')
-    suratName === 'surat keterangan domisili usaha' ? removeAdd('formDataDomUsaha', 'remove') : removeAdd('formDataDomUsaha', 'add')
-    suratName === 'surat keterangan penghasilan' ? removeAdd('formDataPenghasilan', 'remove') : removeAdd('formDataPenghasilan', 'add')
-    suratName === 'surat keterangan kematian' ? removeAdd('formDataKematian', 'remove') : removeAdd('formDataKematian', 'add')
+    setSuratKeyAndData(suratName)
+  }
 
-    suratName === 'surat keterangan berkelakuan baik' ? setSuratKey('301') : null
-    suratName === 'surat keterangan belum memiliki rumah' ? setSuratKey('460') : null
-    suratName === 'surat keterangan belum bekerja' || suratName === 'surat keterangan belum menikah' ? setSuratKey('474.5') : null
-    suratName === 'surat keterangan usaha' || suratName === 'surat keterangan domisili usaha' ? setSuratKey('517') : null
-    suratName === 'surat keterangan penghasilan' ? setSuratKey('010') : null
-    suratName === 'surat keterangan kematian' ? setSuratKey('474.3') : null
+  const setSuratKeyAndData = (names) => {
+    const removeAdd = (id, action) => getId(id).classList[action]('hidden')
+    names === 'surat keterangan usaha' ? removeAdd('formDataUsaha', 'remove') : removeAdd('formDataUsaha', 'add')
+    names === 'surat keterangan domisili usaha' ? removeAdd('formDataDomUsaha', 'remove') : removeAdd('formDataDomUsaha', 'add')
+    names === 'surat keterangan penghasilan' ? removeAdd('formDataPenghasilan', 'remove') : removeAdd('formDataPenghasilan', 'add')
+    names === 'surat keterangan kematian' ? removeAdd('formDataKematian', 'remove') : removeAdd('formDataKematian', 'add')
+
+    names === 'surat keterangan berkelakuan baik' ? setSuratKey('301') : null
+    names === 'surat keterangan belum memiliki rumah' ? setSuratKey('460') : null
+    names === 'surat keterangan belum bekerja' || names === 'surat keterangan belum menikah' ? setSuratKey('474.5') : null
+    names === 'surat keterangan usaha' || names === 'surat keterangan domisili usaha' ? setSuratKey('517') : null
+    names === 'surat keterangan penghasilan' ? setSuratKey('010') : null
+    names === 'surat keterangan kematian' ? setSuratKey('474.3') : null
   }
 
   const previousCreateSuratName = () => {
@@ -355,13 +359,9 @@ const Surat = () => {
   }
 
   const editSurat = async (surat) => {
-    const removeAdd = (id, action) => getId(id).classList[action]('hidden')
     const namecek = surat.nama_surat
-    namecek === 'surat keterangan usaha' ? removeAdd('formDataUsaha', 'remove') : removeAdd('formDataUsaha', 'add')
-    namecek === 'surat keterangan domisili usaha' ? removeAdd('formDataDomUsaha', 'remove') : removeAdd('formDataDomUsaha', 'add')
-    namecek === 'surat keterangan penghasilan' ? removeAdd('formDataPenghasilan', 'remove') : removeAdd('formDataPenghasilan', 'add')
-    namecek === 'surat keterangan kematian' ? removeAdd('formDataKematian', 'remove') : removeAdd('formDataKematian', 'add')
 
+    setSuratKeyAndData(namecek)
     // getId('noSuratNumber').setAttribute('disabled', 'on')
     setActText('update')
     getId('btnCreate').classList.add('hidden')
