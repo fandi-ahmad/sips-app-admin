@@ -1,5 +1,5 @@
 import { React, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard';
 import { Pegawai } from '../pages/Pegawai';
@@ -9,7 +9,7 @@ import Surat from '../pages/Surat';
 export const RoutesTemplate = () => {
 
     useEffect(() => {
-        document.title = 'WPM'
+        document.title = 'Kel. Balaroa'
     }, [])
 
     return (

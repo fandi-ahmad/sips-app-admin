@@ -1,29 +1,23 @@
 import React, {useState, useEffect} from 'react'
 import Layout from '../layouts/Layout'
 import { BasicButton } from '../components/BaseButton'
-import { GetSuratByType, CreateSuratByType, GetWarga, UpdateSuratByType, GetAllSurat, GetWargaById, CreateSuratKetUsaha, GetSuratKetUsaha, UpdateSuratKetUsaha, CreateSuratKematian, getSuratKematian, UpdateSuratKematian } from '../api/suratApi'   //api
+import { GetSuratByType, CreateSuratByType, GetWarga, UpdateSuratByType, CreateSuratKetUsaha, GetSuratKetUsaha, UpdateSuratKetUsaha, CreateSuratKematian, getSuratKematian, UpdateSuratKematian } from '../api/suratApi'   //api
 import { GetPegawai } from '../api/pegawaiApi'     // api
 import { BaseModal, openModal, closeModal, ModalLoading } from '../components/BaseModal'
-import { BaseInput, InputIcon, SearchInput, SelectInput } from '../components/BaseInput'
+import { BaseInput, InputIcon, SelectInput } from '../components/BaseInput'
 import { AlertError, AlertSuccess } from '../components/SweetAlert'
-import { getId, formatDateMounth, formatedNoSurat, formatedNoSuratDesc, printSurat, formatDateFromISO, formatToDot, formatedDayMounth } from '../function/baseFunction'
+import { getId, formatDateMounth, printSurat, formatDateFromISO, formatToDot, formatedDayMounth } from '../function/baseFunction'
 import { FooterTtd, BiodataWarga, HeadPegawai, KopSurat, BaseSurat, Paragraf, UsahaWarga, DomisiliUsaha, DataKematian } from '../components/SuratComponents'
 import { TableHeader, TablePaginate } from '../components/BaseTable'
 
 const Surat = () => {
   const today = new Date();
-  const date = today.getDate();
   const month = today.getMonth();
   const year = today.getFullYear();
-  const monthNames = [ "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-  ];
   const monthRomawis = [ "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII" ];
-  const monthName = monthNames[month];
   const monthRomawi = monthRomawis[month]
-  // const suratKey = 200
 
-  const [suratKey, setSuratKey] = useState(200.1)
+  const [suratKey, setSuratKey] = useState('')
   const [suratList, setSuratList] = useState([])
   const [pegawaiList, setPegawaiList] = useState([])
   const [wargaList, setWargaList] = useState([])
@@ -72,6 +66,8 @@ const Surat = () => {
   const [tahunBerdiri, setTahunBerdiri] = useState('')
   const [bertempat, setBertempat] = useState('')
   const [penghasilan, setPenghasilan] = useState('')
+  const [desa, setDesa] = useState('')
+  const [kecamatan, setKecamatan] = useState('')
 
   // data kematian
   const [sebabKematian, setSebabKematian] = useState('')
@@ -113,18 +109,22 @@ const Surat = () => {
       openModal('upsert')
     }
 
-    const removeAdd = (id, action) => getId(id).classList[action]('hidden')
-    suratName === 'surat keterangan usaha' ? removeAdd('formDataUsaha', 'remove') : removeAdd('formDataUsaha', 'add')
-    suratName === 'surat keterangan domisili usaha' ? removeAdd('formDataDomUsaha', 'remove') : removeAdd('formDataDomUsaha', 'add')
-    suratName === 'surat keterangan penghasilan' ? removeAdd('formDataPenghasilan', 'remove') : removeAdd('formDataPenghasilan', 'add')
-    suratName === 'surat keterangan kematian' ? removeAdd('formDataKematian', 'remove') : removeAdd('formDataKematian', 'add')
+    setSuratKeyAndData(suratName)
+  }
 
-    suratName === 'surat keterangan berkelakuan baik' ? setSuratKey(301) : null
-    suratName === 'surat keterangan belum memiliki rumah' ? setSuratKey(460) : null
-    suratName === 'surat keterangan belum bekerja' || suratName === 'surat keterangan belum menikah' ? setSuratKey('474.5') : null
-    suratName === 'surat keterangan usaha' || suratName === 'surat keterangan domisili usaha' ? setSuratKey(517) : null
-    suratName === 'surat keterangan penghasilan' ? setSuratKey('010') : null
-    suratName === 'surat keterangan kematian' ? setSuratKey('474.3') : null
+  const setSuratKeyAndData = (names) => {
+    const removeAdd = (id, action) => getId(id).classList[action]('hidden')
+    names === 'surat keterangan usaha' ? removeAdd('formDataUsaha', 'remove') : removeAdd('formDataUsaha', 'add')
+    names === 'surat keterangan domisili usaha' ? removeAdd('formDataDomUsaha', 'remove') : removeAdd('formDataDomUsaha', 'add')
+    names === 'surat keterangan penghasilan' ? removeAdd('formDataPenghasilan', 'remove') : removeAdd('formDataPenghasilan', 'add')
+    names === 'surat keterangan kematian' ? removeAdd('formDataKematian', 'remove') : removeAdd('formDataKematian', 'add')
+
+    names === 'surat keterangan berkelakuan baik' ? setSuratKey('301') : null
+    names === 'surat keterangan belum memiliki rumah' ? setSuratKey('460') : null
+    names === 'surat keterangan belum bekerja' || names === 'surat keterangan belum menikah' ? setSuratKey('474.5') : null
+    names === 'surat keterangan usaha' || names === 'surat keterangan domisili usaha' ? setSuratKey('517') : null
+    names === 'surat keterangan penghasilan' ? setSuratKey('010') : null
+    names === 'surat keterangan kematian' ? setSuratKey('474.3') : null
   }
 
   const previousCreateSuratName = () => {
@@ -167,6 +167,8 @@ const Surat = () => {
       case 'tahun berdiri': setTahunBerdiri(value); break;
       case 'bertempat': setBertempat(value); break;
       case 'penghasilan': setPenghasilan(value); break;
+      case 'desa': setDesa(value); break;
+      case 'kecamatan': setKecamatan(value); break;
       case 'sebab kematian': setSebabKematian(value); break;
       case 'tempat kematian': setTempatKematian(value); break;
       case 'hari tanggal': setHariTgl(value); break;
@@ -189,11 +191,6 @@ const Surat = () => {
       ) {
         AlertError('input tidak boleh kosong')
       } else {
-        // const checkNoSurat = await GetSuratByType('', '', '', noSurat, '', '')
-        // if (checkNoSurat.status !== 404) {
-        //   AlertError('nomor surat sudah terdaftar')
-        // } else {
-        // }
         closeModal('upsert')
         openModal('modal-loading')
 
@@ -205,7 +202,7 @@ const Surat = () => {
             no_surat_number: noSuratNumber, maksud: maksud, no_surat_pengantar: noSuratPengantar, id_pegawai: idPegawai,
             nama_usaha: namaUsaha, jenis_usaha: jenisUsaha, npwp: npwp, no_izin_usaha: noIzinUsaha,
             no_fiskal: noFiskal, luas_tempat_usaha: luasTempatUsaha, alamat_usaha: alamatUsaha,
-            tahun_berdiri: tahunBerdiri, bertempat: bertempat, penghasilan: penghasilan
+            tahun_berdiri: tahunBerdiri, bertempat: bertempat, penghasilan: penghasilan, desa: desa, kecamatan: kecamatan
           })
         } else if (suratName === 'surat keterangan kematian') {
           await CreateSuratKematian({
@@ -271,6 +268,8 @@ const Surat = () => {
       setAlamatUsaha(usaha.alamat_usaha)
       setTahunBerdiri(usaha.tahun_berdiri)
       setPenghasilan(usaha.penghasilan)
+      setDesa(usaha.desa)
+      setKecamatan(usaha.kecamatan)
     }
     if (surat.ket_kematian) {
       const mati = surat.ket_kematian
@@ -291,7 +290,7 @@ const Surat = () => {
     setNoSurat(''); setNoSuratNumber(''); setMaksud(''); setIdPegawai(''); setNik(''); setSuratName('')
 
     setNamaUsaha(''); setJenisUsaha(''); setNpwp(''); setNoIzinUsaha(''); setNoFiskal('')
-    setLuasTempatUsaha(''); setAlamatUsaha(''); setTahunBerdiri(''); setBertempat('')
+    setLuasTempatUsaha(''); setAlamatUsaha(''); setTahunBerdiri(''); setBertempat(''); setDesa(''); setKecamatan('')
 
     setSebabKematian(''); setTempatKematian(''); setHariTgl(''); setHubungan(''); setNamap(''); setNikp(''); setAlamatP('')
   }
@@ -349,16 +348,20 @@ const Surat = () => {
     } else {
       setDataSurat(surat)
     }
+
+    if (nameCek === 'surat keterangan domisili usaha') {
+      getId('desaWarga').classList.remove('hidden')
+      getId('kecamatanWarga').classList.remove('hidden')
+    } else {
+      getId('desaWarga').classList.add('hidden')
+      getId('kecamatanWarga').classList.add('hidden')
+    }
   }
 
   const editSurat = async (surat) => {
-    const removeAdd = (id, action) => getId(id).classList[action]('hidden')
     const namecek = surat.nama_surat
-    namecek === 'surat keterangan usaha' ? removeAdd('formDataUsaha', 'remove') : removeAdd('formDataUsaha', 'add')
-    namecek === 'surat keterangan domisili usaha' ? removeAdd('formDataDomUsaha', 'remove') : removeAdd('formDataDomUsaha', 'add')
-    namecek === 'surat keterangan penghasilan' ? removeAdd('formDataPenghasilan', 'remove') : removeAdd('formDataPenghasilan', 'add')
-    namecek === 'surat keterangan kematian' ? removeAdd('formDataKematian', 'remove') : removeAdd('formDataKematian', 'add')
 
+    setSuratKeyAndData(namecek)
     // getId('noSuratNumber').setAttribute('disabled', 'on')
     setActText('update')
     getId('btnCreate').classList.add('hidden')
@@ -387,7 +390,7 @@ const Surat = () => {
           status: status, agama: agama, alamat: alamat, rt_rw: rtrw, no_surat: noSurat, no_surat_pengantar: noSuratPengantar,
           no_surat_number: noSuratNumber, maksud: maksud, id_pegawai: idPegawai,
           nama_usaha: namaUsaha, jenis_usaha: jenisUsaha, npwp: npwp, no_izin_usaha: noIzinUsaha, no_fiskal: noFiskal,
-          luas_tempat_usaha: luasTempatUsaha, alamat_usaha: alamatUsaha, tahun_berdiri: tahunBerdiri, penghasilan: penghasilan
+          luas_tempat_usaha: luasTempatUsaha, alamat_usaha: alamatUsaha, tahun_berdiri: tahunBerdiri, penghasilan: penghasilan, desa: desa, kecamatan: kecamatan
         })
       } else if (suratName === 'surat keterangan kematian') {
         await UpdateSuratKematian({
@@ -491,8 +494,8 @@ const Surat = () => {
 
   const descOpt = 'Demikian Keterangan ini dibuat dan berlaku selama 1 (Satu) bulan sejak dikeluarkan, apabila dikemudian hari terdapat kesalahan data, maka akan diadakan perbaikan sebagaimana mestinya.'
 
-  const closeModalSuratName = () => {
-    closeModal('createSuratName')
+  const closeThisModal = (idModal) => {
+    closeModal(idModal)
     setSuratName('')
   }
 
@@ -607,7 +610,7 @@ const Surat = () => {
           <option value="surat keterangan kematian">surat keterangan kematian</option>
         </SelectInput>
         <div className="modal-action pt-4">
-          <BasicButton onClick={closeModalSuratName} title='Close' className='bg-gray-500 text-white' />
+          <BasicButton onClick={() => closeThisModal('createSuratName')} title='Close' className='bg-gray-500 text-white' />
           <BasicButton onClick={nextCreateSurat} title='Next'/>
         </div>
       </BaseModal>
@@ -669,6 +672,8 @@ const Surat = () => {
         <div className='mt-8 hidden' id='formDataDomUsaha'>
           <div className='text-xl mb-2 font-bold'>Data Domisili Usaha</div>
           <div className='grid grid-cols-4 gap-4'>
+            <BaseInput value={desa} onChange={handleInput} name='desa' label='kelurahan/desa' />
+            <BaseInput value={kecamatan} onChange={handleInput} name='kecamatan' />
             <BaseInput value={namaUsaha} onChange={handleInput} name='nama usaha' />
             <BaseInput value={jenisUsaha} onChange={handleInput} name='jenis usaha' />
             <BaseInput value={alamatUsaha} onChange={handleInput} name='alamat usaha' />
@@ -715,7 +720,7 @@ const Surat = () => {
 
           <BiodataWarga
             nama={nama} nik={nik} jk={jk} ttl={tempatLahir + ', ' + formatDateMounth(tglLahir)} kerja={pekerjaan}
-            negara={negara} status={status} agama={agama} alamat={alamat} rtrw={rtrw} maksud={maksud}
+            negara={negara} status={status} agama={agama} alamat={alamat} rtrw={rtrw} maksud={maksud} desa={desa} kecamatan={kecamatan}
           />
 
           <UsahaWarga id='dataUsahaWarga'

@@ -50,8 +50,6 @@ const Sidebar = () => {
 
         if (location.pathname === '/surat/berkelakuan-baik') {
             activeMenu()
-        } else {
-            
         }
     }
 
